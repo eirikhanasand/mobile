@@ -3,9 +3,20 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@components/*": ["./src/components/*"],
+      "@themes/*": ["./src/styles/themes/*"],
+      "@assets/*": ["./public/assets/*"],
+      "@text/*": ["./public/text/*"],
+      "@screens/*": ["./src/screens/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@type/*": ["./src/types/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@redux/*": ["./src/redux/*"],
+      "@nav/*": ["./src/components/nav/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": [
