@@ -4,13 +4,22 @@ import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
 import 'react-native-reanimated'
-import { useColorScheme } from '@hooks/useColorScheme'
+import { useSelector } from 'react-redux'
+import Wrapper from '@components/wrapper'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
-    const colorScheme = useColorScheme()
+    return (
+        <Wrapper>
+            <App />
+        </Wrapper>
+    )
+}
+
+function App() {
+    const { isDark } = useSelector((state: ReduxState) => state.theme)
     const [loaded] = useFonts({
         SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     })
@@ -26,7 +35,7 @@ export default function RootLayout() {
     }
 
     return (
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
             <Stack>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen name="+not-found" />

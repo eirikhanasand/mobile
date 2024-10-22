@@ -4,10 +4,10 @@
     "strict": true,
     "paths": {
       "@components/*": ["./src/components/*"],
-      "@themes/*": ["./src/styles/themes/*"],
       "@assets/*": ["./public/assets/*"],
       "@text/*": ["./public/text/*"],
       "@screens/*": ["./src/screens/*"],
+      "@themes/*": ["./src/themes/*"],
       "@utils/*": ["./src/utils/*"],
       "@type/*": ["./src/types/*"],
       "@shared/*": ["./src/shared/*"],

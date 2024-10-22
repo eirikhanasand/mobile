@@ -9,7 +9,7 @@ module.exports = function(api) {
             ["module-resolver", {
                 "alias": {
                     "@components": "./src/components",
-                    "@themes": "./src/styles/themes",
+                    "@themes": "./src/themes",
                     "@assets": "./public/assets",
                     "@text": "./public/text",
                     "@screens": "./src/screens",

@@ -1,32 +1,21 @@
-import Ionicons from '@expo/vector-icons/Ionicons'
-import { StyleSheet, Image, Platform } from 'react-native'
-import { Collapsible } from '@components/Collapsible'
-import { ExternalLink } from '@components/ExternalLink'
-import ParallaxScrollView from '@components/ParallaxScrollView'
-import { ThemedText } from '@components/ThemedText'
-import { ThemedView } from '@components/ThemedView'
+import { Dimensions, SafeAreaView, Text, View } from 'react-native'
+import { useSelector } from 'react-redux'
 
-export default function TabTwoScreen() {
+export default function ExploreScreen() {
+    const { lang } = useSelector((state: ReduxState) => state.lang)
+    const { theme } = useSelector((state: ReduxState) => state.theme)
+    const height = Dimensions.get('window').height
+
     return (
-        <ParallaxScrollView
-            headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-            headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
-            <ThemedView style={styles.titleContainer}>
-                <ThemedText type="title">Explore</ThemedText>
-            </ThemedView>
-        </ParallaxScrollView>
+        <SafeAreaView style={{
+            backgroundColor: theme.background, 
+            height,
+        }}>
+            <View style={{paddingHorizontal: 8}}>
+                <Text style={{ color: theme.textColor, fontSize: 30, fontWeight: 'bold'}}>
+                    {lang ? "Utforsk" : "Explore"}
+                </Text>
+            </View>
+        </SafeAreaView>
     )
 }
-
-const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-})
