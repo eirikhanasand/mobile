@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import { persistReducer } from "redux-persist"
-import LangReducer from "@redux/lang"
-import ThemeReducer from "@redux/theme"
+import LangReducer from "./lang"
+import ThemeReducer from "./theme"
 import { thunk } from "redux-thunk"
 
 // Combines all reducers

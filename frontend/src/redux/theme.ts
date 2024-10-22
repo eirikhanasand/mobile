@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit"
-import Dark from "@themes/dark"
-import Light from "@themes/light"
+import Dark from "../themes/dark"
+import Light from "../themes/light"
 
 export const ThemeSlice = createSlice({
     name: "theme",

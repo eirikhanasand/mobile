@@ -1,7 +1,7 @@
 import { Dimensions, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { changeLang } from '@redux/lang'
-import { changeTheme } from '@redux/theme'
+import { changeLang } from '../redux/lang'
+import { changeTheme } from '../redux/theme'
 
 export default function ExploreScreen() {
     const { lang } = useSelector((state: ReduxState) => state.lang)

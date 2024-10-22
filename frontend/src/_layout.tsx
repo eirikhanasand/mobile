@@ -5,7 +5,7 @@ import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
 import 'react-native-reanimated'
 import { useSelector } from 'react-redux'
-import Wrapper from '@components/wrapper'
+import Wrapper from './components/wrapper'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
