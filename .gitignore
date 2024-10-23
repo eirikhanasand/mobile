@@ -11,6 +11,7 @@ npm-debug.*
 web-build/
 ios/
 android/
+.vscode/
 
 # macOS
 .DS_Store
@@ -20,3 +21,4 @@ android/
 
 expo-env.d.ts
 # @end expo-cli
+.zshrc
