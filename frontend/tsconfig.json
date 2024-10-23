@@ -3,26 +3,55 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@components/*": ["./src/components/*"],
-      "@assets/*": ["./public/assets/*"],
-      "@text/*": ["./public/text/*"],
-      "@screens/*": ["./src/screens/*"],
-      "@themes/*": ["./src/themes/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@type/*": ["./src/types/*"],
-      "@shared/*": ["./src/shared/*"],
-      "@styles/*": ["./src/styles/*"],
-      "@redux/*": ["./src/redux/*"],
-      "@nav/*": ["./src/components/nav/*"],
-      "@constants": ["./constants"],
-      "@hooks/*": ["./src/hooks/*"],
-      "@/*": ["./src/*"]
+      "@components/*": [
+        "./src/components/*"
+      ],
+      "@assets/*": [
+        "./public/assets/*"
+      ],
+      "@text/*": [
+        "./public/text/*"
+      ],
+      "@screens/*": [
+        "./src/screens/*"
+      ],
+      "@themes/*": [
+        "./src/themes/*"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "@type/*": [
+        "./src/types/*"
+      ],
+      "@shared/*": [
+        "./src/shared/*"
+      ],
+      "@styles/*": [
+        "./src/styles/*"
+      ],
+      "@redux/*": [
+        "./src/redux/*"
+      ],
+      "@nav/*": [
+        "./src/components/nav/*"
+      ],
+      "@constants": [
+        "./constants"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
+      ],
+      "@/*": [
+        "./src/*"
+      ]
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
     "frontend/.expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    ".expo/types/**/*.ts"
   ]
 }
