@@ -14,7 +14,7 @@ module.exports = function(api) {
                     "@text": "./public/text",
                     "@screens": "./src/screens",
                     "@utils": "./src/utils",
-                    "@constants": "./src/constants",
+                    "@constants": "./constants",
                     "@shared": "./src/shared",
                     "@styles": "./src/styles",
                     "@redux": "./src/redux",

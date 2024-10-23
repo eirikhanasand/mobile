@@ -14,7 +14,7 @@
       "@styles/*": ["./src/styles/*"],
       "@redux/*": ["./src/redux/*"],
       "@nav/*": ["./src/components/nav/*"],
-      "@constants/*": ["./src/constants/*"],
+      "@constants": ["./constants"],
       "@hooks/*": ["./src/hooks/*"],
       "@/*": ["./src/*"]
     }
