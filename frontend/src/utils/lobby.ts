@@ -1,10 +1,8 @@
 import { API } from "@constants"
 
-async function createLobby() {
+export async function createLobby() {
     try {
-        const response = await fetch(`${API}/lobby`, {
-            method: "POST"
-        })
+        const response = await fetch(`${API}/lobby`, { method: "POST" })
     
         if (!response.ok) {
             throw new Error(`Failed to create lobby: ${response}`)
@@ -16,11 +14,9 @@ async function createLobby() {
     }
 }
 
-async function getLobby(id: string) {
+export async function getLobby(id: string) {
     try {
-        const response = await fetch(`${API}/lobby`, {
-            body: JSON.stringify({ id })
-        })
+        const response = await fetch(`${API}/lobby/${id}`)
 
         if (!response.ok) {
             throw new Error(`Failed to get lobby with ID ${id}`)
@@ -32,15 +28,18 @@ async function getLobby(id: string) {
     }
 }
 
-async function joinLobby(id: string, name: string) {
+export async function joinLobby(id: string, name: string) {
     try {
         const response = await fetch(`${API}/lobby`, {
             method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify({ id, name })
         })
 
         if (!response.ok) {
-            throw new Error(`Failed to join lobby ${id} as ${name}.`)
+            throw new Error(`Failed to join lobby ${id} as ${name}. Reason: ${response}`)
         }
 
         return response.json()
@@ -49,10 +48,13 @@ async function joinLobby(id: string, name: string) {
     }
 }
 
-async function deleteLobby(id: string) {
+export async function deleteLobby(id: string) {
     try {
         const response = await fetch(`${API}/lobby`, {
             method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify({ id })
         })
 
@@ -66,10 +68,13 @@ async function deleteLobby(id: string) {
     }
 }
 
-async function kick(id: string, name: string) {
+export async function kick(id: string, name: string) {
     try {
         const response = await fetch(`${API}/kick`, {
             method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify({ id, name })
         })
 
@@ -83,10 +88,13 @@ async function kick(id: string, name: string) {
     }
 }
 
-async function nextQuestion(id: string) {
+export async function nextQuestion(id: string) {
     try {
         const response = await fetch(`${API}/game`, {
             method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
             body: JSON.stringify({ id })
         })
 

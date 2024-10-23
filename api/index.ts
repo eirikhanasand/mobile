@@ -60,9 +60,8 @@ app.put('/lobby', (req, res) => {
 })
 
 // Fetches the information for the specified lobby
-app.get('/lobby', (req, res) => {
-    const id = checkBody(req, res)
-    if (!id) return
+app.get('/lobby/:id', (req, res) => {
+    const { id } = req.params
 
     const game = lobbies.get(id) as Lobby
     const custom = game?.questions || []

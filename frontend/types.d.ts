@@ -7,6 +7,12 @@ type ReduxState = {
     lang: {
         lang: boolean
     }
+    name: {
+        name: string
+    }
+    game: {
+        gameID: string
+    }
 }
 
 type Theme = {

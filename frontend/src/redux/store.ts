@@ -3,12 +3,16 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit"
 import { persistReducer } from "redux-persist"
 import LangReducer from "./lang"
 import ThemeReducer from "./theme"
+import NameReducer from "./name"
+import GameReducer from "./game"
 import { thunk } from "redux-thunk"
 
 // Combines all reducers
 const reducers = combineReducers({
     theme: ThemeReducer,
     lang: LangReducer,
+    name: NameReducer,
+    game: GameReducer
 })
 
 // Function to localstore redux state with key:root and AsyncStorage, as well as
@@ -19,6 +23,8 @@ const saveState = {
     whitelist: [
         "lang",
         "theme",
+        "name",
+        "game"
     ]
 }
 

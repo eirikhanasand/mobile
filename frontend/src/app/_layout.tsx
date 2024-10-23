@@ -1,8 +1,6 @@
 import { Tabs } from 'expo-router'
 import React from 'react'
 import { TabBarIcon } from '../components/navigation/TabBarIcon'
-import { Colors } from '../constants/Colors'
-import { useColorScheme } from '../hooks/useColorScheme'
 import { useSelector } from 'react-redux'
 import Wrapper from '../components/wrapper'
 import { StatusBar } from 'expo-status-bar'
@@ -17,19 +15,20 @@ export default function TabLayout() {
 }
 
 function Layout() {
-    const colorScheme = useColorScheme()
     const { lang } = useSelector((state: ReduxState) => state.lang)
     const { theme, isDark } = useSelector((state: ReduxState) => state.theme)
+    const hidden = ["game1", "game2", "joined"]
 
     return (
         <View style={{flex: 1}}>
-            <Tabs screenOptions={{
+            <Tabs screenOptions={({route}) => ({
                 tabBarActiveTintColor: theme.orange,
                 headerShown: false,
                 tabBarStyle: {
-                    backgroundColor: theme.contrast
-                }
-            }}>
+                    backgroundColor: theme.contrast,
+                },
+                tabBarButton: hidden.includes(route.name) ? () => null : undefined,
+            })}>
                 <Tabs.Screen
                     name="index"
                     options={{
@@ -57,6 +56,8 @@ function Layout() {
                         ),
                     }}
                 />
+                <Tabs.Screen name="game1" />
+                <Tabs.Screen name="game2" />
             </Tabs>
             <StatusBar style={isDark ? "light" : "dark"} />
         </View>
