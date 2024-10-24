@@ -39,15 +39,6 @@ function Layout() {
                     }}
                 />
                 <Tabs.Screen
-                    name="explore"
-                    options={{
-                        title: lang ? 'Utforsk' : 'Explore',
-                        tabBarIcon: ({ color, focused }) => (
-                            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-                        ),
-                    }}
-                />
-                <Tabs.Screen
                     name="settings"
                     options={{
                         title: lang ? 'Innstillinger' : 'Settings',

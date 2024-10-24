@@ -27,9 +27,11 @@ export default function Game1() {
 
     return (
         <SafeAreaView style={{ backgroundColor: theme.background, height }}>
-            <View style={{paddingHorizontal: 8}}>
+            <View style={{paddingHorizontal: 8, paddingTop: 32}}>
                 <Text style={{ color: theme.textColor, fontSize: 30, fontWeight: 'bold'}}>
-                    {lang ? "Spill 1" : "Game 1"}{gameID ? ` - ${gameID}`: ''}
+                    {lang ? "100 Spørsmål" : "100 questions"}
+                    {lang ? "\nSpill ID" : "Game ID"}
+                    {gameID ? ` - ${gameID}`: ''}
                 </Text>
                 {!gameID && <Button handler={startGame} text={lang ? "Start spillet" : "Start game"} />}
                 <PlayerList gameID={gameID} />

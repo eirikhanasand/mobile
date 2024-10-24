@@ -53,8 +53,8 @@ export default function HomeScreen() {
                     {lang ? "Velkommen!" : "Welcome!"}
                 </Text>
             </View>
-            <Button handler={handleGame1} text={lang ? "Spill 1" : "Game 1"} />
-            <Button handler={handleGame2} text={lang ? "Spill 2" : "Game 2"} />
+            <Button handler={handleGame1} text={lang ? "100 spørsmål" : "100 questions"} />
+            <Button handler={handleGame2} text={lang ? "Terning" : "Dice game"} />
             <Button handler={promptGame} text={lang ? "Bli med i spill" : "Join game"} />
             {!name && <PromptName />}
             {id !== null && !joined && <Prompt 
