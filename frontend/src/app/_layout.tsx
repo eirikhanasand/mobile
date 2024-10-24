@@ -17,7 +17,7 @@ export default function TabLayout() {
 function Layout() {
     const { lang } = useSelector((state: ReduxState) => state.lang)
     const { theme, isDark } = useSelector((state: ReduxState) => state.theme)
-    const hidden = ["game1", "game2", "joined"]
+    const hidden = ["game1", "game2", "joined", "questions2"]
 
     return (
         <View style={{flex: 1}}>

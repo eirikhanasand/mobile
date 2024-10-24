@@ -14,6 +14,8 @@ export default function Game1() {
     const [gameID, setGameID] = useState<string | null>(null)
     const [currentQuestion, setCurrentQuestion] = useState<string | null>(null);
     const [roundStarted, setRoundStarted] = useState<boolean>(false);
+    const [askedQuestions, setAskedQuestions] = useState<number[]>([]);
+    const [finished, setFinished] = useState<boolean>(false);
 
     async function startGame() {
         const id = await createLobby()
@@ -25,11 +27,41 @@ export default function Game1() {
     }
 
     async function startRound() {
-        // Use the questions from questions.ts
+        // Use the questions from questions2.ts
         console.log("Starting round with questions:");
 
-        setCurrentQuestion("Question 1");
+        // Select a random question with ID between 1 and 10 that hasn't been asked yet
+        let randomID: number;
+        let question;
+        do {
+            randomID = Math.floor(Math.random() * 10) + 1;
+            question = Questions.find(question => question.id === randomID);
+        } while (askedQuestions.includes(randomID) && askedQuestions.length < 10);
+
+        if (question) {
+            setCurrentQuestion(lang ? question.title_no : question.title_en);
+            setAskedQuestions([...askedQuestions, randomID]);
+        }
         setRoundStarted(true);
+    }
+
+    async function nextQuestion() {
+        if (askedQuestions.length >= 10) {
+            setFinished(true);
+            return;
+        }
+        // Select the next random question that hasn't been asked yet
+        let randomID: number;
+        let question;
+        do {
+            randomID = Math.floor(Math.random() * 10) + 1;
+            question = Questions.find(question => question.id === randomID);
+        } while (askedQuestions.includes(randomID) && askedQuestions.length < 10);
+
+        if (question) {
+            setCurrentQuestion(lang ? question.title_no : question.title_en);
+            setAskedQuestions([...askedQuestions, randomID]);
+        }
     }
 
     return (
@@ -46,9 +78,17 @@ export default function Game1() {
                     {gameID && <Button handler={startRound} text={lang ? "Start" : "Start"} />}
                     </>
                 )}
-                {roundStarted && currentQuestion && (
+                {roundStarted && !finished && currentQuestion && (
+                    <>
+                        <Text style={{ color: theme.textColor, fontSize: 20, marginTop: 20 }}>
+                            {currentQuestion}
+                        </Text>
+                        <Button handler={nextQuestion} text={lang ? "Neste spørsmål" : "Next question"} />
+                    </>
+                )}
+                {finished && (
                     <Text style={{ color: theme.textColor, fontSize: 20, marginTop: 20 }}>
-                        {currentQuestion}
+                        {lang ? "Ferdig" : "Finished"}
                     </Text>
                 )}
             </View>
