@@ -17,6 +17,9 @@ export default function Game1() {
     const [askedQuestions, setAskedQuestions] = useState<number[]>([]);
     const [finished, setFinished] = useState<boolean>(false);
 
+    // Replace with actual players from lobby
+    const players = ["Alice", "Bob"];
+
     async function startGame() {
         const id = await createLobby()
 
@@ -24,6 +27,13 @@ export default function Game1() {
             setGameID(id)
             joinLobby(id, name)
         }
+    }
+
+    function replacePlaceholders(question: string, players: string[]) {
+        return question.replace(/{player}/g, () => {
+            const randomIndex = Math.floor(Math.random() * players.length);
+            return players[randomIndex];
+        });
     }
 
     async function startRound() {
@@ -39,7 +49,8 @@ export default function Game1() {
         } while (askedQuestions.includes(randomID) && askedQuestions.length < 10);
 
         if (question) {
-            setCurrentQuestion(lang ? question.title_no : question.title_en);
+            const questionText = lang ? question.title_no : question.title_en;
+            setCurrentQuestion(replacePlaceholders(questionText, players));
             setAskedQuestions([...askedQuestions, randomID]);
         }
         setRoundStarted(true);
@@ -59,7 +70,8 @@ export default function Game1() {
         } while (askedQuestions.includes(randomID) && askedQuestions.length < 10);
 
         if (question) {
-            setCurrentQuestion(lang ? question.title_no : question.title_en);
+            const questionText = lang ? question.title_no : question.title_en;
+            setCurrentQuestion(replacePlaceholders(questionText, players));
             setAskedQuestions([...askedQuestions, randomID]);
         }
     }
