@@ -44,9 +44,9 @@ export default function Game1() {
         let randomID: number;
         let question;
         do {
-            randomID = Math.floor(Math.random() * 10) + 1;
+            randomID = Math.floor(Math.random() * 100) + 1;
             question = Questions.find(question => question.id === randomID);
-        } while (askedQuestions.includes(randomID) && askedQuestions.length < 10);
+        } while (askedQuestions.includes(randomID) && askedQuestions.length < 100);
 
         if (question) {
             const questionText = lang ? question.title_no : question.title_en;
@@ -57,7 +57,7 @@ export default function Game1() {
     }
 
     async function nextQuestion() {
-        if (askedQuestions.length >= 10) {
+        if (askedQuestions.length >= 100) {
             setFinished(true);
             return;
         }
@@ -65,9 +65,9 @@ export default function Game1() {
         let randomID: number;
         let question;
         do {
-            randomID = Math.floor(Math.random() * 10) + 1;
+            randomID = Math.floor(Math.random() * 100) + 1;
             question = Questions.find(question => question.id === randomID);
-        } while (askedQuestions.includes(randomID) && askedQuestions.length < 10);
+        } while (askedQuestions.includes(randomID) && askedQuestions.length < 100);
 
         if (question) {
             const questionText = lang ? question.title_no : question.title_en;
