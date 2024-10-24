@@ -4,6 +4,7 @@ import { createLobby, getLobby, joinLobby } from '@utils/lobby'
 import { useEffect, useState } from 'react'
 import { Dimensions, SafeAreaView, Text, View } from 'react-native'
 import { useSelector } from 'react-redux'
+import Questions from './questions2'
 
 export default function Game1() {
     const { lang } = useSelector((state: ReduxState) => state.lang)
@@ -11,6 +12,8 @@ export default function Game1() {
     const { name } = useSelector((state: ReduxState) => state.name)
     const height = Dimensions.get('window').height
     const [gameID, setGameID] = useState<string | null>(null)
+    const [currentQuestion, setCurrentQuestion] = useState<string | null>(null);
+    const [roundStarted, setRoundStarted] = useState<boolean>(false);
 
     async function startGame() {
         const id = await createLobby()
@@ -22,7 +25,11 @@ export default function Game1() {
     }
 
     async function startRound() {
-        // start the round
+        // Use the questions from questions.ts
+        console.log("Starting round with questions:");
+
+        setCurrentQuestion("Question 1");
+        setRoundStarted(true);
     }
 
     return (
@@ -30,12 +37,20 @@ export default function Game1() {
             <View style={{paddingHorizontal: 8, paddingTop: 32}}>
                 <Text style={{ color: theme.textColor, fontSize: 30, fontWeight: 'bold'}}>
                     {lang ? "100 Spørsmål" : "100 questions"}
-                    {lang ? "\nSpill ID" : "Game ID"}
-                    {gameID ? ` - ${gameID}`: ''}
+                    {gameID ? `\n${lang ? "Spill ID" : "Game ID"} - ${gameID}` : ''}
                 </Text>
-                {!gameID && <Button handler={startGame} text={lang ? "Start spillet" : "Start game"} />}
-                <PlayerList gameID={gameID} />
-                {gameID && <Button handler={startRound} text={lang ? "Start" : "Start"} />}
+                {!roundStarted && (
+                    <>
+                    {!gameID && <Button handler={startGame} text={lang ? "Start spillet" : "Start game"} />}
+                    <PlayerList gameID={gameID} />
+                    {gameID && <Button handler={startRound} text={lang ? "Start" : "Start"} />}
+                    </>
+                )}
+                {roundStarted && currentQuestion && (
+                    <Text style={{ color: theme.textColor, fontSize: 20, marginTop: 20 }}>
+                        {currentQuestion}
+                    </Text>
+                )}
             </View>
         </SafeAreaView>
     )
