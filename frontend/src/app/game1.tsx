@@ -19,6 +19,8 @@ export default function Game1() {
     const [askedQuestions, setAskedQuestions] = useState<number[]>([]);
     const [finished, setFinished] = useState<boolean>(false);
     const [players, setPlayers] = useState<string[]>([]);
+    const [showExplanation, setShowExplanation] = useState<boolean>(true);
+
 
     // Start the game when the component mounts
     async function startGame() {
@@ -28,6 +30,7 @@ export default function Game1() {
             setGameID(id)
             joinLobby(id, name)
             fetchPlayers(id);
+            setShowExplanation(false);
         }
     }
 
@@ -112,6 +115,13 @@ export default function Game1() {
                     {gameID ? `\n${lang ? "Spill ID" : "Game ID"} - ${gameID}` : ''}
                 </Text>
             </View>
+                {showExplanation && (
+                    <Text style={{ color: theme.textColor, fontSize: 15, marginTop: 8, marginBottom: 8 }}>
+                        {lang ? 
+                            "Kort forklaring på spill regler og hvordan" : 
+                            "Short explanation of game rules and how to play"}
+                    </Text>
+                )}
                 {!roundStarted && (
                     <>
                     {!gameID && <Button handler={startGame} text={lang ? "Lag en lobby" : "Create a lobby"} />}
