@@ -1,5 +1,5 @@
 const Questions = [
-    // Categories: either Kind or Bold, and either NTNU or NNTNU (notNTNU)
+    // Categories: either Kind or Bold, and either NTNU or default not NTNU 
     {
         id: 1,
         title_no: "{player}, hvis du kunne dratt hvor som helst i verden, hvor ville du dratt of hvorfor?",

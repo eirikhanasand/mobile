@@ -20,6 +20,7 @@ export default function Game1() {
     const [finished, setFinished] = useState<boolean>(false);
     const [players, setPlayers] = useState<string[]>([]);
 
+    // Start the game when the component mounts
     async function startGame() {
         const id = await createLobby()
 
@@ -30,6 +31,7 @@ export default function Game1() {
         }
     }
 
+    // Fetch the players in the lobby
     async function fetchPlayers(lobbyID: string) {
         const lobby = await getLobby(lobbyID);
         console.log('Lobby:', lobby); 
@@ -40,6 +42,7 @@ export default function Game1() {
         }
     }
 
+    // Replace the {player} placeholder with a random player in the question
     function replacePlaceholders(question: string, players: string[]) {
         return question.replace(/{player}/g, () => {
             const randomIndex = Math.floor(Math.random() * players.length);
@@ -47,6 +50,7 @@ export default function Game1() {
         });
     }
 
+    // Start a new round with a random question
     async function startRound() {
         // Use the questions from questions2.ts
         console.log("Starting round with questions:");
@@ -67,12 +71,12 @@ export default function Game1() {
         setRoundStarted(true);
     }
 
+    // Select the next random question that hasn't been asked yet
     async function nextQuestion() {
         if (askedQuestions.length >= 100) {
             setFinished(true);
             return;
         }
-        // Select the next random question that hasn't been asked yet
         let randomID: number;
         let question;
         do {
@@ -87,6 +91,7 @@ export default function Game1() {
         }
     }
 
+    // Restart the questions
     function restartQuestions() {
         setCurrentQuestion(null);
         setRoundStarted(false);
@@ -97,6 +102,7 @@ export default function Game1() {
         }
     }
 
+    // Render the component
     return (
         <SafeAreaView style={{ backgroundColor: theme.background, height }}>
             <View style={{paddingHorizontal: 8, paddingTop: 32}}>
