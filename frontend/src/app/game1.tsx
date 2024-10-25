@@ -20,6 +20,7 @@ export default function Game1() {
     const [finished, setFinished] = useState<boolean>(false);
     const [players, setPlayers] = useState<string[]>([]);
     const [showExplanation, setShowExplanation] = useState<boolean>(true);
+    const [showGameID, setShowGameID] = useState<boolean>(true);
 
 
     // Start the game when the component mounts
@@ -72,6 +73,7 @@ export default function Game1() {
             setAskedQuestions([...askedQuestions, randomID]);
         }
         setRoundStarted(true);
+        setShowGameID(false);
     }
 
     // Select the next random question that hasn't been asked yet
@@ -112,7 +114,7 @@ export default function Game1() {
             <View style={styles.button}>
                 <Text style={{ color: theme.textColor, fontSize: 30, fontWeight: 'bold'}}>
                     {lang ? "100 Spørsmål" : "100 questions"}
-                    {gameID ? `\n${lang ? "Spill ID" : "Game ID"} - ${gameID}` : ''}
+                    {showGameID && gameID ? `\n${lang ? "Spill ID" : "Game ID"} - ${gameID}` : ''}
                 </Text>
             </View>
                 {showExplanation && (
