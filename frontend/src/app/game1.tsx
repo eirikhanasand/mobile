@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react'
 import { Dimensions, SafeAreaView, Text, View } from 'react-native'
 import { useSelector } from 'react-redux'
 import Questions from './questions2'
+import React from 'react';
+import { StyleSheet } from 'react-native';
 
 export default function Game1() {
     const { lang } = useSelector((state: ReduxState) => state.lang)
@@ -76,6 +78,13 @@ export default function Game1() {
         }
     }
 
+    function restartQuestions() {
+        setCurrentQuestion(null);
+        setRoundStarted(false);
+        setAskedQuestions([]);
+        setFinished(false);
+    }
+
     return (
         <SafeAreaView style={{ backgroundColor: theme.background, height }}>
             <View style={{paddingHorizontal: 8, paddingTop: 32}}>
@@ -92,9 +101,12 @@ export default function Game1() {
                 )}
                 {roundStarted && !finished && currentQuestion && (
                     <>
-                        <Text style={{ color: theme.textColor, fontSize: 20, marginTop: 20 }}>
-                            {currentQuestion}
-                        </Text>
+                        <View style={[styles.questionBox, {backgroundColor: theme.blue}]}>
+                            <Text style={{ color: theme.textColor, fontSize: 20 }}>
+                                {currentQuestion}
+                            </Text>
+                        </View>
+        
                         <Button handler={nextQuestion} text={lang ? "Neste spørsmål" : "Next question"} />
                     </>
                 )}
@@ -103,7 +115,25 @@ export default function Game1() {
                         {lang ? "Ferdig" : "Finished"}
                     </Text>
                 )}
+                {(roundStarted || finished) && (
+                    <View style={styles.button}>
+                        <Button handler={restartQuestions} text={lang ? "Start på nytt" : "Restart Questions"} />
+                    </View>
+                )}
             </View>
         </SafeAreaView>
     )
 }
+
+// Styles (do not define colors here but in themes and use in return statement)
+const styles = StyleSheet.create({
+    questionBox: {
+        borderWidth: 1,
+        padding: 16,
+        borderRadius: 8,
+        marginVertical: 16,
+    },
+    button: {
+        marginVertical: 8, 
+    },
+});

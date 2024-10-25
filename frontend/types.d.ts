@@ -30,4 +30,6 @@ type Theme = {
     trackColor: string
     trackBackgroundColor: string
     dark: string
+    red: string
+    blue: string
 }
