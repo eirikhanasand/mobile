@@ -18,9 +18,7 @@ export default function Game1() {
     const [roundStarted, setRoundStarted] = useState<boolean>(false);
     const [askedQuestions, setAskedQuestions] = useState<number[]>([]);
     const [finished, setFinished] = useState<boolean>(false);
-
-    // Replace with actual players from lobby
-    const players = ["Alice", "Bob"];
+    const [players, setPlayers] = useState<string[]>([]);
 
     async function startGame() {
         const id = await createLobby()
@@ -28,6 +26,17 @@ export default function Game1() {
         if (id) {
             setGameID(id)
             joinLobby(id, name)
+            fetchPlayers(id);
+        }
+    }
+
+    async function fetchPlayers(lobbyID: string) {
+        const lobby = await getLobby(lobbyID);
+        console.log('Lobby:', lobby); 
+        if (lobby && Array.isArray(lobby.players)) {
+            setPlayers(lobby.players);
+        } else {
+            console.error('Invalid lobby structure or no players found');
         }
     }
 
@@ -83,6 +92,9 @@ export default function Game1() {
         setRoundStarted(false);
         setAskedQuestions([]);
         setFinished(false);
+        if (gameID) {
+            fetchPlayers(gameID);
+        }
     }
 
     return (
