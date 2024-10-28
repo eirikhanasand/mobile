@@ -4,7 +4,7 @@ const Light = {
     contrast: "#C8C8C8",
     transparent: "#77777733",
     transparentAndroid: "#99999960",
-    orange: "#fd8738",
+    orange: "#FFA07A",
     textColor: "black",
     titleTextColor: "black",
     oppositeTextColor: "black",
@@ -12,7 +12,10 @@ const Light = {
     switchOffState: "#fd8738",
     trackColor: "#909090",
     trackBackgroundColor: "#909090",
-    dark: "#B8B8B8"
+    dark: "#B8B8B8", 
+    red: "#FF6347", 
+    blue: "#ADD8E6"
+
 }
 
 export default Light

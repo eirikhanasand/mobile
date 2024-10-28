@@ -17,7 +17,7 @@ export default function TabLayout() {
 function Layout() {
     const { lang } = useSelector((state: ReduxState) => state.lang)
     const { theme, isDark } = useSelector((state: ReduxState) => state.theme)
-    const hidden = ["game1", "game2", "joined"]
+    const hidden = ["game1", "game2", "joined", "questions2"]
 
     return (
         <View style={{flex: 1}}>
@@ -35,15 +35,6 @@ function Layout() {
                         title: lang ? 'Hjem' : 'Home',
                         tabBarIcon: ({ color, focused }) => (
                             <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-                        ),
-                    }}
-                />
-                <Tabs.Screen
-                    name="explore"
-                    options={{
-                        title: lang ? 'Utforsk' : 'Explore',
-                        tabBarIcon: ({ color, focused }) => (
-                            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
                         ),
                     }}
                 />

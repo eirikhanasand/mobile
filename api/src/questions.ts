@@ -1,19 +1,63 @@
 const Questions = [
     {
-        title_no: "Hva er dette?",
-        title_en: "What is this?",
+        id: 1,
+        title_no: "Hi",
+        title_en: "Hello",
+        categories: ["NTNU", "KindBold"],
     },
     {
-        title_no: "Hva er 2?",
-        title_en: "What is 2?",
+        id: 2,
+        title_no: "",
+        title_en: "",
+        categories: ["NTNU", "KindBold"],
     },
     {
-        title_no: "Hva er 3?",
-        title_en: "What is 2?",
+        id: 3,
+        title_no: "",
+        title_en: "",
+        categories: ["NTNU", "KindBold"],
     },
     {
-        title_no: "Hva er 4?",
-        title_en: "What is 4?",
+        id: 4,
+        title_no: "",
+        title_en: "",
+        categories: ["NTNU", "KindBold"],
+    },
+    {
+        id: 5,
+        title_no: "",
+        title_en: "",
+        categories: ["NTNU", "KindBold"],
+    },
+    {
+        id: 6,
+        title_no: "",
+        title_en: "",
+        categories: ["NTNU", "KindBold"],
+    },
+    {
+        id: 7,
+        title_no: "",
+        title_en: "",
+        categories: ["NTNU", "KindBold"],
+    },
+    {
+        id: 8,
+        title_no: "",
+        title_en: "",
+        categories: ["NTNU", "KindBold"],
+    },
+    {
+        id: 9,
+        title_no: "",
+        title_en: "",
+        categories: ["NTNU", "KindBold"],
+    },
+    {
+        id: 10,
+        title_no: "",
+        title_en: "",
+        categories: ["NTNU", "KindBold"],
     },
 ]
 

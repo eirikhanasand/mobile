@@ -10,6 +10,7 @@ npm-debug.*
 web-build/
 ios/
 android/
+.vscode/
 
 # macOS
 .DS_Store
