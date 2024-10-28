@@ -14,6 +14,7 @@ import {
 import { setName } from '@redux/name'
 import Field from '@components/field'
 import { setGame } from '@redux/game'
+import { ScrollView } from 'react-native'
 
 type PromptProps = {
     id: string | null
@@ -46,16 +47,20 @@ export default function HomeScreen() {
         setID("pending")
     }
 
-    return (
-        <SafeAreaView style={{backgroundColor: theme.background, height, gap: 8 }}>
+    return ( 
+        
+        <ScrollView style={{backgroundColor: theme.background, height, gap: 8 }}> 
+        
             <View style={{paddingHorizontal: 8}}>
-                <Text style={{ color: theme.textColor, fontSize: 30, fontWeight: 'bold'}}>
-                    {lang ? "Velkommen!" : "Welcome!"}
+                <Text style={{ color: theme.textColor, fontSize: 60, fontWeight: 'bold', paddingTop: 40, textAlign: 'center'}}> 
+                    {"Bubbles"}
                 </Text>
+            </View> 
+            <View style={{display: 'flex',  paddingBottom: 20}}>
+                <Button handler={promptGame} text={lang ? "Bli med i spill" : "Join game"} />
+                <Button handler={handleGame1} text={lang ? "100 spørsmål" : "100 questions"} /> 
+                <Button handler={handleGame2} text={lang ? "Terning" : "Dice"} />   
             </View>
-            <Button handler={handleGame1} text={lang ? "Spill 1" : "Game 1"} />
-            <Button handler={handleGame2} text={lang ? "Spill 2" : "Game 2"} />
-            <Button handler={promptGame} text={lang ? "Bli med i spill" : "Join game"} />
             {!name && <PromptName />}
             {id !== null && !joined && <Prompt 
                 id={id} 
@@ -63,9 +68,9 @@ export default function HomeScreen() {
                 name={name} 
                 setName={setName} 
                 setJoined={setJoined}
-            />}
-        </SafeAreaView>
-    )
+            />} 
+        </ScrollView>
+    ) 
 }
 
 function PromptName() {
@@ -113,7 +118,7 @@ function PromptName() {
                     title={lang ? "Navn" : "Name"} 
                     text={name} 
                     setText={setLocalName} 
-                    placeholder={lang ? "Ola" : "Steve"}
+                    placeholder={lang ? "Oda" : "Steve"}
                 />
                 <View style={{
                     position: 'absolute', 

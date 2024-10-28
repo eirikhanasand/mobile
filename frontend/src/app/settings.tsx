@@ -1,4 +1,4 @@
-import { Dimensions, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeLang } from '../redux/lang'
 import { changeTheme } from '../redux/theme'
@@ -29,23 +29,25 @@ export default function ExploreScreen() {
 
     return (
         <SafeAreaView style={{backgroundColor: theme.background, height }}>
-            <View style={{paddingHorizontal: 8, gap: 8 }}>
+            <View style={{paddingHorizontal: 16, gap: 16 }}>
+                <Text style={{ color: theme.textColor, fontSize: 30, fontWeight: 'bold', paddingTop: 32}}>
+                    {lang ? "Innstillinger" : "Settings"}
+                </Text>
                 <Field
                     title={lang ? "Navn" : "Name"} 
                     text={name} 
                     setText={setLocalName} 
                     placeholder={lang ? "Ola" : "Steve"}
                 />
-                <Text style={{ color: theme.textColor, fontSize: 30, fontWeight: 'bold'}}>
-                    {lang ? "Innstillinger" : "Settings"}
+                <Text style={{ color: theme.textColor, fontSize: 20, marginBottom: 8 }}>
+                    {lang ? "Bytt modus:" : "Change mode:"}
                 </Text>
-                <Button handler={handleThemeChange} text={isDark 
-                        ? lang ? "Lyst" : "Light"
-                        : lang ? "Mørkt" : "Dark"
-                } />
+                <Button handler={handleThemeChange} text={isDark ? (lang ? "Lyst" : "Light") : (lang ? "Mørkt" : "Dark")} />
+                <Text style={{ color: theme.textColor, fontSize: 20, marginBottom: 8, marginTop: 16 }}>
+                    {lang ? "Bytt språk:" : "Change language:"}
+                </Text>
                 <Button handler={handleLangChange} text={lang ? "English" : "Norsk"} />
             </View>
         </SafeAreaView>
     )
 }
-

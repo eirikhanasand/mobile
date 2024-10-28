@@ -12,18 +12,25 @@ export default function Button({handler, text}: ButtonProps) {
     return (
         <TouchableOpacity
             style={{
-                justifyContent: 'center',
+                borderRadius: 260,
+                paddingBottom: 80,
+                paddingTop: 80,
+                marginLeft: 30,
+                marginVertical: 15, // Adds vertical space between buttons
+                width: 350,
+                justifyContent: 'space-between',
                 alignItems: 'center',
-                borderRadius: 20,
-                height: 35,
-                backgroundColor: theme.contrast 
+                backgroundColor: theme.contrast,
             }} 
             onPress={handler}
         >
             <Text style={{
+                display: 'flex',
+                flexWrap: 'nowrap',
+                padding: 70,
                 color: 'white',
                 fontWeight: 'bold',
-                fontSize: 18
+                fontSize: 28
             }}>{text}</Text>
         </TouchableOpacity>
     )
