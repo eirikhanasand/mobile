@@ -44,7 +44,7 @@ export default function Game2() {
                 </Text>
                 {!gameID && <Button handler={startGame} text={lang ? 'Start spillet' : 'Start game'} />}
                 <PlayerList gameID={gameID} />
-                {gameID && <Button handler={startRound} text={lang ? 'Start' : 'Start'} />}
+                {gameID && <Button handler={startRound} text={lang ? 'Kast terning' : 'Throw dice'} />}
                 
                 {/* Pass startRoll to DiceRoller and reset it after completion */}
                 <DiceRoller startRoll={startRoll} onRollComplete={handleRollComplete} />

@@ -43,12 +43,12 @@ const DiceRoller: React.FC<DiceRollerProps> = ({ startRoll, onRollComplete }) =>
             {isRolling ? (
                 <Image
                     source={{ uri: 'https://media.giphy.com/media/5xtDarpTZP1hgRgReLK/giphy.gif' }}
-                    style={{ width: 100, height: 100 }}
+                    style={{ width: 300, height: 300 }}
                 />
             ) : (
                 <Image
                     source={currentDice}
-                    style={{ width: 100, height: 100 }}
+                    style={{ width: 300, height: 300 }}
                 />
             )}
         </View>
