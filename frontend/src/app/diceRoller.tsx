@@ -10,7 +10,7 @@ interface DiceRollerProps {
 const DiceRoller: React.FC<DiceRollerProps> = ({ startRoll, onRollComplete }) => {
     const [isRolling, setIsRolling] = useState(false);
 
-    const diceImages = [
+    const diceImages = [ // can make new ones for the dark screen
         require('../../public/assets/images/dice_1.png'),
         require('../../public/assets/images/dice_2.png'),
         require('../../public/assets/images/dice_3.png'),
@@ -42,7 +42,7 @@ const DiceRoller: React.FC<DiceRollerProps> = ({ startRoll, onRollComplete }) =>
         <View style={{ alignItems: 'center', justifyContent: 'center' }}>
             {isRolling ? (
                 <Image
-                    source={{ uri: 'https://media.giphy.com/media/5xtDarpTZP1hgRgReLK/giphy.gif' }}
+                    source={{ uri: 'https://media.giphy.com/media/5xtDarpTZP1hgRgReLK/giphy.gif' }} // gif
                     style={{ width: 300, height: 300 }}
                 />
             ) : (
