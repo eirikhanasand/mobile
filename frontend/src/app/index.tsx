@@ -38,9 +38,9 @@ export default function HomeScreen() {
         navigation.navigate("game1")
     }
     
-    // Navigation handler for game 2
-    function handleGame2() {
-        navigation.navigate("game2")
+    // Navigation handler for dice
+    function handleDice() {
+        navigation.navigate("dice")
     }
 
     function promptGame() {
@@ -59,7 +59,7 @@ export default function HomeScreen() {
             <View style={{display: 'flex',  paddingBottom: 20}}>
                 <Button handler={promptGame} text={lang ? "Bli med i spill" : "Join game"} />
                 <Button handler={handleGame1} text={lang ? "100 spørsmål" : "100 questions"} /> 
-                <Button handler={handleGame2} text={lang ? "Terning" : "Dice"} />   
+                <Button handler={handleDice} text={lang ? "Terning" : "Dice"} />   
             </View>
             {!name && <PromptName />}
             {id !== null && !joined && <Prompt 
@@ -119,6 +119,7 @@ function PromptName() {
                     text={name} 
                     setText={setLocalName} 
                     placeholder={lang ? "Oda" : "Steve"}
+                    autoFocus={true}
                 />
                 <View style={{
                     position: 'absolute', 

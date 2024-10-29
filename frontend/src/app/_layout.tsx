@@ -17,7 +17,7 @@ export default function TabLayout() {
 function Layout() {
     const { lang } = useSelector((state: ReduxState) => state.lang)
     const { theme, isDark } = useSelector((state: ReduxState) => state.theme)
-    const hidden = ["game1", "game2", "joined", "questions2", "diceRoller"]
+    const hidden = ["game1", "joined", "questions2", "dice"]
 
     return (
         <View style={{flex: 1}}>
@@ -48,7 +48,7 @@ function Layout() {
                     }}
                 />
                 <Tabs.Screen name="game1" />
-                <Tabs.Screen name="game2" />
+                <Tabs.Screen name="dice" />
             </Tabs>
             <StatusBar style={isDark ? "light" : "dark"} />
         </View>
