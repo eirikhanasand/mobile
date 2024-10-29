@@ -1,21 +1,19 @@
-import Button from '@components/button';
-import PlayerList from '@components/playerList';
-import { createLobby, getLobby, joinLobby } from '@utils/lobby';
-import { useEffect, useState } from 'react';
-import { Dimensions, SafeAreaView, Text, View, TouchableOpacity } from 'react-native';
-import { useSelector } from 'react-redux';
-import Questions from './questions2';
+import Button from '@components/button'
+import PlayerList from '@components/playerList'
+import { createLobby, getLobby, joinLobby } from '@utils/lobby'
+import { useEffect, useState } from 'react'
+import { Dimensions, SafeAreaView, Text, View } from 'react-native'
+import { useSelector } from 'react-redux'
+import Questions from './questions2'
 import React from 'react';
 import { StyleSheet } from 'react-native';
 
 export default function Game1() {
-    const { lang } = useSelector((state: ReduxState) => state.lang);
-    const { theme } = useSelector((state: ReduxState) => state.theme);
-    const { name } = useSelector((state: ReduxState) => state.name);
-    const height = Dimensions.get('window').height;
-
-    // State variables
-    const [gameID, setGameID] = useState<string | null>(null);
+    const { lang } = useSelector((state: ReduxState) => state.lang)
+    const { theme } = useSelector((state: ReduxState) => state.theme)
+    const { name } = useSelector((state: ReduxState) => state.name)
+    const height = Dimensions.get('window').height
+    const [gameID, setGameID] = useState<string | null>(null)
     const [currentQuestion, setCurrentQuestion] = useState<string | null>(null);
     const [roundStarted, setRoundStarted] = useState<boolean>(false);
     const [askedQuestions, setAskedQuestions] = useState<number[]>([]);
@@ -24,42 +22,23 @@ export default function Game1() {
     const [showExplanation, setShowExplanation] = useState<boolean>(true);
     const [showGameID, setShowGameID] = useState<boolean>(true);
 
-    // Categories filter
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
-    // Categories list
-    const categories = ["Kind", "Bold", "NTNU"];
-
-    // Function to toggle category selection
-    function toggleCategory(category: string) {
-        setSelectedCategories(prev =>
-            prev.includes(category)
-                ? prev.filter(cat => cat !== category)
-                : [...prev, category]
-        );
-    }
-
-    // Filter questions based on selected categories
-    function getFilteredQuestions() {
-        return Questions.filter(question =>
-            selectedCategories.every(cat => question.categories.includes(cat))
-        );
-    }
 
     // Start the game when the component mounts
     async function startGame() {
-        const id = await createLobby();
+        const id = await createLobby()
+
         if (id) {
-            setGameID(id);
-            joinLobby(id, name);
+            setGameID(id)
+            joinLobby(id, name)
             fetchPlayers(id);
             setShowExplanation(false);
         }
     }
 
-    // Fetch players in the lobby
+    // Fetch the players in the lobby
     async function fetchPlayers(lobbyID: string) {
         const lobby = await getLobby(lobbyID);
+        console.log('Lobby:', lobby); 
         if (lobby && Array.isArray(lobby.players)) {
             setPlayers(lobby.players);
         } else {
@@ -67,7 +46,7 @@ export default function Game1() {
         }
     }
 
-    // Replace {player} placeholder with a random player
+    // Replace the {player} placeholder with a random player in the question
     function replacePlaceholders(question: string, players: string[]) {
         return question.replace(/{player}/g, () => {
             const randomIndex = Math.floor(Math.random() * players.length);
@@ -75,26 +54,57 @@ export default function Game1() {
         });
     }
 
-    // Start a new round with a random filtered question
+    // Start a new round with a random question
     async function startRound() {
-        const filteredQuestions = getFilteredQuestions();
-        if (filteredQuestions.length === 0) {
-            setCurrentQuestion(lang ? "Ingen spørsmål i denne kategorien" : "No questions in this category");
-            return;
-        }
+        // Use the questions from questions2.ts
+        console.log("Starting round with questions:");
 
-        let randomQuestion;
+        // Select a random question with ID between 1 and 10 that hasn't been asked yet
+        let randomID: number;
+        let question;
         do {
-            randomQuestion = filteredQuestions[Math.floor(Math.random() * filteredQuestions.length)];
-        } while (askedQuestions.includes(randomQuestion.id) && askedQuestions.length < filteredQuestions.length);
+            randomID = Math.floor(Math.random() * 100) + 1;
+            question = Questions.find(question => question.id === randomID);
+        } while (askedQuestions.includes(randomID) && askedQuestions.length < 100);
 
-        if (randomQuestion) {
-            const questionText = lang ? randomQuestion.title_no : randomQuestion.title_en;
+        if (question) {
+            const questionText = lang ? question.title_no : question.title_en;
             setCurrentQuestion(replacePlaceholders(questionText, players));
-            setAskedQuestions([...askedQuestions, randomQuestion.id]);
+            setAskedQuestions([...askedQuestions, randomID]);
         }
         setRoundStarted(true);
         setShowGameID(false);
+    }
+
+    // Select the next random question that hasn't been asked yet
+    async function nextQuestion() {
+        if (askedQuestions.length >= 100) {
+            setFinished(true);
+            return;
+        }
+        let randomID: number;
+        let question;
+        do {
+            randomID = Math.floor(Math.random() * 100) + 1;
+            question = Questions.find(question => question.id === randomID);
+        } while (askedQuestions.includes(randomID) && askedQuestions.length < 100);
+
+        if (question) {
+            const questionText = lang ? question.title_no : question.title_en;
+            setCurrentQuestion(replacePlaceholders(questionText, players));
+            setAskedQuestions([...askedQuestions, randomID]);
+        }
+    }
+
+    // Restart the questions
+    function restartQuestions() {
+        setCurrentQuestion(null);
+        setRoundStarted(false);
+        setAskedQuestions([]);
+        setFinished(false);
+        if (gameID) {
+            fetchPlayers(gameID);
+        }
     }
 
     // Render the component
@@ -120,46 +130,39 @@ export default function Game1() {
                 )}
                 {!roundStarted && (
                     <>
-                        {!gameID && <Button handler={startGame} text={lang ? "Lag en lobby" : "Create a lobby"} />}
-                        <PlayerList gameID={gameID} />
-                        {gameID && <Button handler={startRound} text={lang ? "Start" : "Start"} />}
+                    {!gameID && <Button handler={startGame} text={lang ? "Lag en lobby" : "Create a lobby"} />}
+                    <PlayerList gameID={gameID} />
+                    {gameID && <Button handler={startRound} text={lang ? "Start" : "Start"} />}
                     </>
                 )}
-
                 {roundStarted && !finished && currentQuestion && (
                     <>
-                        <View style={[styles.questionBox, { backgroundColor: theme.blue }]}>
-                            <Text style={{ color: theme.textColor, fontSize: 20 }}>{currentQuestion}</Text>
+                        <View style={[styles.questionBox, {backgroundColor: theme.blue}]}>
+                            <Text style={{ color: theme.textColor, fontSize: 20 }}>
+                                {currentQuestion}
+                            </Text>
                         </View>
-                        <Button handler={startRound} text={lang ? "Neste spørsmål" : "Next question"} />
+        
+                        <Button handler={nextQuestion} text={lang ? "Neste spørsmål" : "Next question"} />
                     </>
                 )}
-
                 {finished && (
                     <Text style={{ color: theme.textColor, fontSize: 20, marginTop: 20 }}>
                         {lang ? "Ferdig" : "Finished"}
                     </Text>
                 )}
+                {(roundStarted || finished) && (
+                    <View style={styles.button}>
+                        <Button handler={restartQuestions} text={lang ? "Start på nytt" : "Restart Questions"} />
+                    </View>
+                )}
             </View>
         </SafeAreaView>
-    );
+    )
 }
 
+// Styles (do not define colors here but in themes and use in return statement)
 const styles = StyleSheet.create({
-    filterContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        marginBottom: 16,
-    },
-    filterButton: {
-        padding: 8,
-        margin: 4,
-        borderWidth: 1,
-        borderRadius: 4,
-    },
-    selectedFilter: {
-        backgroundColor: '#cccccc',
-    },
     questionBox: {
         borderWidth: 1,
         padding: 16,
@@ -167,6 +170,6 @@ const styles = StyleSheet.create({
         marginVertical: 16,
     },
     button: {
-        marginVertical: 8,
+        marginVertical: 8, 
     },
 });
