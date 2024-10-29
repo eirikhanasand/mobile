@@ -9,6 +9,7 @@ app.use(bodyParser.json());
 let games = Games;
 let questions = Questions;
 let lobbies = new Map();
+const askedQuestions = [];
 // General error message
 app.get('/', (_, res) => {
     res.json({ error: "Invalid endpoint. Please use /games for an overview of existing games." });
@@ -17,11 +18,6 @@ app.get('/', (_, res) => {
 app.get('/games', (_, res) => {
     const Games = JSON.stringify(games);
     res.json(Games);
-});
-// Retrieves all questions
-app.get('/questions', (_, res) => {
-    const Questions = JSON.stringify(questions);
-    res.json(Questions);
 });
 // Creates a new lobby
 app.post('/lobby', (_, res) => {
@@ -54,9 +50,7 @@ app.put('/lobby', (req, res) => {
 app.get('/lobby/:id', (req, res) => {
     const { id } = req.params;
     const game = lobbies.get(id);
-    const custom = (game === null || game === void 0 ? void 0 : game.questions) || [];
-    const mergedQuestions = [...custom, ...questions];
-    const current = (game === null || game === void 0 ? void 0 : game.current) ? mergedQuestions[game === null || game === void 0 ? void 0 : game.current] : 0;
+    const current = (game === null || game === void 0 ? void 0 : game.current) ? game === null || game === void 0 ? void 0 : game.current : null;
     res.json({
         players: game.players,
         status: game === null || game === void 0 ? void 0 : game.status,
@@ -75,15 +69,29 @@ app.put('/game/:id', (req, res) => {
     const lobby = lobbies.get(id);
     const custom = (lobby === null || lobby === void 0 ? void 0 : lobby.questions) || [];
     const mergedQuestions = [...custom, ...questions];
-    const current = (lobby === null || lobby === void 0 ? void 0 : lobby.current) || 0;
-    const next = current + 1 < mergedQuestions.length ? current + 1 : 0;
-    const updatedLobby = Object.assign(Object.assign({}, lobby), { current: next });
-    lobbies.set(id.toUpperCase(), updatedLobby);
-    res.json({
-        players: lobby.players,
-        status: lobby === null || lobby === void 0 ? void 0 : lobby.status,
-        current: next
-    });
+    let randomID;
+    let question;
+    do {
+        randomID = Math.floor(Math.random() * 100) + 1;
+        question = mergedQuestions[randomID];
+    } while (askedQuestions.includes(randomID) && askedQuestions.length < 100);
+    if (question) {
+        const title_no = replacePlaceholders(question.title_no, lobby.players);
+        const title_en = replacePlaceholders(question.title_en, lobby.players);
+        const current = {
+            title_no,
+            title_en,
+            categories: question.categories
+        };
+        askedQuestions.push(randomID);
+        const updatedLobby = Object.assign(Object.assign({}, lobby), { current });
+        lobbies.set(id.toUpperCase(), updatedLobby);
+        res.json({
+            players: lobby.players,
+            status: lobby === null || lobby === void 0 ? void 0 : lobby.status,
+            current,
+        });
+    }
 });
 // Deletes game
 app.delete('/lobby', (req, res) => {
@@ -128,6 +136,12 @@ function checkBody(req, res) {
         return null;
     }
     return id;
+}
+function replacePlaceholders(question, players) {
+    return question.replace(/{player}/g, () => {
+        const randomIndex = Math.floor(Math.random() * players.length);
+        return players[randomIndex];
+    });
 }
 // GET endpoint kort
 // - spill id

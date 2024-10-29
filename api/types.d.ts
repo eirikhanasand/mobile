@@ -1,6 +1,7 @@
 type Question = {
     title_no: string
     title_en: string
+    categories: string[]
 }
 
 type Game = {
@@ -16,7 +17,7 @@ type Lobby = {
     // ingame = round in progress
     // waiting = round was just completed, waiting for host to continue
     status: "inlobby" | "ingame" | "waiting"
-    current?: number
+    current?: Question
     questions?: Question[]
 }
 

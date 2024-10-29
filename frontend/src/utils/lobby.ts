@@ -99,19 +99,14 @@ export async function kick(id: string, name: string) {
 
 export async function nextQuestion(id: string) {
     try {
-        const response = await fetch(`${API}/game`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ id })
-        })
+        const response = await fetch(`${API}/game/${id}`, { method: "PUT" })
 
         if (!response.ok) {
             throw new Error(`Failed to go to next question in ${id}.`)
         }
 
-        return response.json()
+        const next = response.json()
+        return next
     } catch (error) {
         console.error(error)
     }

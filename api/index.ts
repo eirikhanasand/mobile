@@ -12,6 +12,7 @@ app.use(bodyParser.json())
 let games: Game[] = Games
 let questions: Question[] = Questions 
 let lobbies: Map<string, Lobby> = new Map()
+const askedQuestions: number[] = []
 
 // General error message
 app.get('/', (_, res) => {
@@ -22,12 +23,6 @@ app.get('/', (_, res) => {
 app.get('/games', (_, res) => {
     const Games = JSON.stringify(games);
     res.json(Games);
-})
-
-// Retrieves all questions
-app.get('/questions', (_, res) => {
-    const Questions = JSON.stringify(questions);
-    res.json(Questions);
 })
 
 // Creates a new lobby
@@ -71,9 +66,7 @@ app.get('/lobby/:id', (req, res) => {
     const { id } = req.params
 
     const game = lobbies.get(id) as Lobby
-    const custom = game?.questions || []
-    const mergedQuestions = [...custom, ...questions]
-    const current = game?.current ? mergedQuestions[game?.current] : 0
+    const current = game?.current ? game?.current : null
 
     res.json({
         players: game.players,
@@ -96,17 +89,35 @@ app.put('/game/:id', (req, res) => {
     const lobby = lobbies.get(id) as Lobby
     const custom = lobby?.questions || []
     const mergedQuestions = [...custom, ...questions]
-    const current = lobby?.current || 0
-    const next = current + 1 < mergedQuestions.length ? current + 1 : 0
 
-    const updatedLobby = {...lobby, current: next}
-    lobbies.set(id.toUpperCase(), updatedLobby)
+    let randomID: number
+    let question
 
-    res.json({
-        players: lobby.players,
-        status: lobby?.status,
-        current: next
-    })
+    do {
+        randomID = Math.floor(Math.random() * 100) + 1
+        question = mergedQuestions[randomID]
+    } while (askedQuestions.includes(randomID) && askedQuestions.length < 100)
+
+    if (question) {
+        const title_no = replacePlaceholders(question.title_no, lobby.players)
+        const title_en = replacePlaceholders(question.title_en, lobby.players)
+
+        const current = {
+            title_no,
+            title_en,
+            categories: question.categories
+        }
+        askedQuestions.push(randomID)
+        const updatedLobby = {...lobby, current}
+        lobbies.set(id.toUpperCase(), updatedLobby)
+    
+        res.json({
+            players: lobby.players,
+            status: lobby?.status,
+            current,
+        })
+    }
+
 })
 
 // Deletes game
@@ -161,6 +172,13 @@ function checkBody(req: any, res: any): string | null {
     }
 
     return id
+}
+
+function replacePlaceholders(question: string, players: string[]) {
+    return question.replace(/{player}/g, () => {
+        const randomIndex = Math.floor(Math.random() * players.length)
+        return players[randomIndex]
+    })
 }
 
 // GET endpoint kort
