@@ -13,6 +13,7 @@ export default function PlayerList({gameID}: PlayerListProps) {
     const { theme } = useSelector((state: ReduxState) => state.theme)
     const { name } = useSelector((state: ReduxState) => state.name)
     const [players, setPlayers] = useState([name])
+    const leader = players[0] === name ? lang ? "Deg" : "You" : players[0]
     
     async function getPlayers() {
         const lobby = await getLobby(gameID || '')
@@ -41,7 +42,7 @@ export default function PlayerList({gameID}: PlayerListProps) {
                 fontWeight: 'bold'
             }}>{lang ? "Leder" : "Leader"}</Text>
             <View>
-                <Text style={{color: 'white', fontSize: 18}}>{players[0]}</Text>
+                <Text style={{color: 'white', fontSize: 18}}>{leader}</Text>
             </View>
             {players.length > 1 && <>
                 <Text style={{
