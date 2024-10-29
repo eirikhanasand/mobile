@@ -2,7 +2,7 @@ import Button from '@components/button'
 import PlayerList from '@components/playerList'
 import { createLobby, getLobby, joinLobby } from '@utils/lobby'
 import { useEffect, useState } from 'react'
-import { Dimensions, SafeAreaView, Text, View } from 'react-native'
+import { Dimensions, SafeAreaView, Text, View, TouchableOpacity } from 'react-native'
 import { useSelector } from 'react-redux'
 import Questions from './questions2'
 import React from 'react';
@@ -22,6 +22,20 @@ export default function Game1() {
     const [showExplanation, setShowExplanation] = useState<boolean>(true);
     const [showGameID, setShowGameID] = useState<boolean>(true);
 
+    // Categories filter
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+    // Categories list
+    const categories = ["Kind", "Bold", "NTNU"];
+
+    // Function to toggle category selection
+    function toggleCategory(category: string) {
+        setSelectedCategories(prev =>
+            prev.includes(category)
+                ? prev.filter(cat => cat !== category)
+                : [...prev, category]
+        );
+    }
 
     // Start the game when the component mounts
     async function startGame() {
@@ -111,6 +125,21 @@ export default function Game1() {
     return (
         <SafeAreaView style={{ backgroundColor: theme.background, height }}>
             <View style={{paddingHorizontal: 8, paddingTop: 32}}>
+                {/* Filter Buttons */}
+                <View style={styles.filterContainer}>
+                    {categories.map(category => (
+                        <TouchableOpacity
+                            key={category}
+                            style={[
+                                styles.filterButton,
+                                selectedCategories.includes(category) ? styles.selectedFilter : {},
+                            ]}
+                            onPress={() => toggleCategory(category)}
+                        >
+                            <Text style={{ color: theme.textColor }}>{category}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
             <View style={styles.button}>
                 <Text style={{ color: theme.titleTextColor, fontSize: 30, fontWeight: 'bold' }}>
                     {lang ? "100 Spørsmål" : "100 questions"}
@@ -171,5 +200,19 @@ const styles = StyleSheet.create({
     },
     button: {
         marginVertical: 8, 
+    },
+    filterContainer: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginBottom: 16,
+    },
+    filterButton: {
+        padding: 8,
+        margin: 4,
+        borderWidth: 1,
+        borderRadius: 4,
+    },
+    selectedFilter: {
+        backgroundColor: '#cccccc',
     },
 });
