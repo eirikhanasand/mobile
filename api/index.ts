@@ -54,14 +54,14 @@ app.put('/lobby', (req, res) => {
     }
 
     
-    const lobby = lobbies.get(id) as Lobby
+    const lobby = lobbies.get(id.toUpperCase()) as Lobby
 
     if (lobby.players.length >= MAX_PLAYERS) {
         return res.status(409).json("Full lobby.")
     }
 
     const updatedLobby = {...lobby, players: [...lobby?.players, name]}
-    lobbies.set(id, updatedLobby)
+    lobbies.set(id.toUpperCase(), updatedLobby)
 
     res.json(updatedLobby)
 })
