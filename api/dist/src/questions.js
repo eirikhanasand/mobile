@@ -70,19 +70,19 @@ const Questions = [
         id: 12,
         title_no: "{player}, hvis du kunne ha en superkraft, hva ville det vært?",
         title_en: "{player}, if you could have one superpower, what would it be?",
-        categories: ["NNTNU", "Kind"]
+        categories: ["Kind"]
     },
     {
         id: 13,
         title_no: "{player}, hva er ditt mest pinlige øyeblikk?",
         title_en: "{player}, what is your most embarrassing moment?",
-        categories: ["NNTNU", "Bold"]
+        categories: ["Bold"]
     },
     {
         id: 14,
         title_no: "Hvem er den morsomste personen av spillerene?",
         title_en: "Who is the funniest person among the players?",
-        categories: ["NNTNU", "Kind"]
+        categories: ["Kind"]
     },
     {
         id: 15,
@@ -104,7 +104,7 @@ const Questions = [
     },
     {
         id: 18,
-        title_no: "{player}, hva er noe du har gjort som du aldri kunne fortelle foreldrene dine?",
+        title_no: "{player}, hva er noe du har gjort som du aldri kunne fortalt foreldrene dine?",
         title_en: "{player}, what is something you've done that you could never tell your parents?",
         categories: ["Bold"]
     },
