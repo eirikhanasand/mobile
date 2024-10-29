@@ -33,6 +33,9 @@ export default function HomeScreen() {
     const [id, setID] = useState<string | null>(null)
     const [joined, setJoined] = useState(false)
 
+    const game1 = require('../../public/assets/images/game1.jpg')
+    const game2 = require('../../public/assets/images/game2.jpg')
+
     // Navigation handler for game 1
     function handleGame1() {
         navigation.navigate("game1")
@@ -58,8 +61,8 @@ export default function HomeScreen() {
             </View> 
             <View style={{display: 'flex',  paddingBottom: 20}}>
                 <Button handler={promptGame} text={lang ? "Bli med i spill" : "Join game"} />
-                <Button handler={handleGame1} text={lang ? "100 spørsmål" : "100 questions"} /> 
-                <Button handler={handleGame2} text={lang ? "Terning" : "Dice"} />   
+                <Button handler={handleGame1} text={lang ? "100 spørsmål" : "100 questions"} backgroundImage={game1}/> 
+                <Button handler={handleGame2} text={lang ? "Terning" : "Dice"} backgroundImage={game2}/>   
             </View>
             {!name && <PromptName />}
             {id !== null && !joined && <Prompt 
