@@ -52,7 +52,7 @@ export default function HomeScreen() {
         <ScrollView style={{backgroundColor: theme.background, height, gap: 8 }}> 
         
             <View style={{paddingHorizontal: 8}}>
-                <Text style={{ color: theme.textColor, fontSize: 60, fontWeight: 'bold', paddingTop: 40, textAlign: 'center'}}> 
+                <Text style={{ color: theme.titleTextColor, fontSize: 60, fontWeight: 'bold', paddingTop: 40, textAlign: 'center'}}> 
                     {"Bubbles"}
                 </Text>
             </View> 

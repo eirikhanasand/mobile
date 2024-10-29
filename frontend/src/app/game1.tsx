@@ -101,27 +101,23 @@ export default function Game1() {
     return (
         <SafeAreaView style={{ backgroundColor: theme.background, height }}>
             <View style={{paddingHorizontal: 8, paddingTop: 32}}>
-                {/* Filter Buttons */}
-                <View style={styles.filterContainer}>
-                    {categories.map(category => (
-                        <TouchableOpacity
-                            key={category}
-                            style={[
-                                styles.filterButton,
-                                selectedCategories.includes(category) ? styles.selectedFilter : {},
-                            ]}
-                            onPress={() => toggleCategory(category)}
-                        >
-                            <Text style={{ color: theme.textColor }}>{category}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </View>
-
-                <Text style={{ color: theme.textColor, fontSize: 30, fontWeight: 'bold' }}>
+            <View style={styles.button}>
+                <Text style={{ color: theme.titleTextColor, fontSize: 30, fontWeight: 'bold' }}>
                     {lang ? "100 Spørsmål" : "100 questions"}
-                    {showGameID && gameID ? `\n${lang ? "Spill ID" : "Game ID"} - ${gameID}` : ''}
                 </Text>
-
+                {showGameID && gameID && (
+                    <Text style={{ color: theme.textColor, fontSize: 20 }}>
+                        {`\n${lang ? "Spill ID" : "Game ID"} - ${gameID}`}
+                    </Text>
+                )}
+            </View>
+                {showExplanation && (
+                    <Text style={{ color: theme.textColor, fontSize: 15, marginTop: 8, marginBottom: 8 }}>
+                        {lang ? 
+                            "Kort forklaring på spill regler og hvordan" : 
+                            "Short explanation of game rules and how to play"}
+                    </Text>
+                )}
                 {!roundStarted && (
                     <>
                         {!gameID && <Button handler={startGame} text={lang ? "Lag en lobby" : "Create a lobby"} />}

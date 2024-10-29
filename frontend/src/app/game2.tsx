@@ -38,10 +38,14 @@ export default function Game2() {
     return (
         <SafeAreaView style={{ backgroundColor: theme.background, height }}>
             <View style={{paddingHorizontal: 8}}>
-                <Text style={{ color: theme.textColor, fontSize: 30, fontWeight: 'bold', paddingTop: 32}}>
+                <Text style={{ color: theme.titleTextColor, fontSize: 30, fontWeight: 'bold', paddingTop: 32}}>
                     {lang ? "Terning" : "Dice game"}
-                    {gameID ? `\n${lang ? "Spill ID" : "Game ID"} - ${gameID}` : ''}
                 </Text>
+                {gameID && (
+                    <Text style={{ color: theme.textColor, fontSize: 20 }}>
+                        {`\n${lang ? "Spill ID" : "Game ID"} - ${gameID}`}
+                    </Text>
+                )}
                 {!gameID && <Button handler={startGame} text={lang ? 'Start spillet' : 'Start game'} />}
                 <PlayerList gameID={gameID} />
                 {gameID && <Button handler={startRound} text={lang ? 'Kast terning' : 'Throw dice'} />}

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
-import { Text, TextInput } from "react-native"
+import { Text, TextInput, View } from "react-native"
 import { useSelector } from "react-redux"
 
 type NameProps = {
@@ -22,19 +22,28 @@ export default function Field({title, placeholder, autoFocus, text, setText}: Na
     }
 
     return (
-        <>
-            <Text style={{
-                color: theme.textColor,
-                fontSize: 20,
-                fontWeight: 'bold',
-            }}
-            >{title}</Text>
-            <TextInput 
-                style={{
-                    backgroundColor: theme.contrast, 
+        <View style={{ alignItems: 'center', marginBottom: 16 }}>
+            <View style={{ alignSelf: 'flex-start', marginBottom: 8 }}>
+                <Text style={{
                     color: theme.textColor,
-                    height: 35,
-                    borderRadius: 20
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                }}>
+                    {title}
+                </Text>
+            </View>
+            <TextInput
+                style={{
+                    backgroundColor: theme.contrast,
+                    color: theme.textColor,
+                    width: 350,
+                    height: 350,
+                    borderRadius: 170,
+                    textAlign: 'center',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    padding: 8,
+                    fontSize: 24
                 }}
                 value={getText()}
                 placeholder={placeholder}
@@ -44,6 +53,6 @@ export default function Field({title, placeholder, autoFocus, text, setText}: Na
                 autoFocus={autoFocus}
                 selectionColor={theme.orange}
             />
-        </>
+        </View>
     )
 }
