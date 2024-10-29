@@ -112,10 +112,14 @@ export default function Game1() {
         <SafeAreaView style={{ backgroundColor: theme.background, height }}>
             <View style={{paddingHorizontal: 8, paddingTop: 32}}>
             <View style={styles.button}>
-                <Text style={{ color: theme.textColor, fontSize: 30, fontWeight: 'bold'}}>
+                <Text style={{ color: theme.titleTextColor, fontSize: 30, fontWeight: 'bold' }}>
                     {lang ? "100 Spørsmål" : "100 questions"}
-                    {showGameID && gameID ? `\n${lang ? "Spill ID" : "Game ID"} - ${gameID}` : ''}
                 </Text>
+                {showGameID && gameID && (
+                    <Text style={{ color: theme.textColor, fontSize: 20 }}>
+                        {`\n${lang ? "Spill ID" : "Game ID"} - ${gameID}`}
+                    </Text>
+                )}
             </View>
                 {showExplanation && (
                     <Text style={{ color: theme.textColor, fontSize: 15, marginTop: 8, marginBottom: 8 }}>

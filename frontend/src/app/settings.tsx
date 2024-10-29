@@ -30,7 +30,7 @@ export default function ExploreScreen() {
     return (
         <SafeAreaView style={{backgroundColor: theme.background, height }}>
             <ScrollView style={{paddingHorizontal: 16, gap: 16 }}>
-                <Text style={{ color: theme.textColor, fontSize: 30, fontWeight: 'bold', paddingTop: 32, marginBottom: 16}}>
+                <Text style={{ color: theme.titleTextColor, fontSize: 30, fontWeight: 'bold', paddingTop: 32, marginBottom: 16}}>
                     {lang ? "Innstillinger" : "Settings"}
                 </Text>
                 <Field

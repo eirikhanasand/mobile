@@ -28,7 +28,7 @@ export default function Button({handler, text}: ButtonProps) {
                 display: 'flex',
                 flexWrap: 'nowrap',
                 padding: 70,
-                color: 'white',
+                color: theme.textColor,
                 fontWeight: 'bold',
                 fontSize: 28
             }}>{text}</Text>
