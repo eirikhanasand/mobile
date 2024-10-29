@@ -5,8 +5,8 @@ import { Dispatch, SetStateAction, useState } from 'react'
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types'
 import { useDispatch, useSelector } from "react-redux"
 import { 
+    Alert,
     Dimensions, 
-    SafeAreaView, 
     Text, 
     TouchableOpacity,
     View 
@@ -20,7 +20,6 @@ type PromptProps = {
     id: string | null
     setID: Dispatch<SetStateAction<string | null>>
     name: string | null
-    setName: Dispatch<SetStateAction<string | null>>
     setJoined: Dispatch<SetStateAction<boolean>>
 }
 
@@ -66,7 +65,6 @@ export default function HomeScreen() {
                 id={id} 
                 setID={setID} 
                 name={name} 
-                setName={setName} 
                 setJoined={setJoined}
             />} 
         </ScrollView>
@@ -118,7 +116,7 @@ function PromptName() {
                     title={lang ? "Navn" : "Name"} 
                     text={name} 
                     setText={setLocalName} 
-                    placeholder={lang ? "Oda" : "Steve"}
+                    placeholder={lang ? "Ola" : "Steve"}
                     autoFocus={true}
                 />
                 <View style={{
@@ -133,18 +131,23 @@ function PromptName() {
         </View>
     )
 }
-function Prompt({id, setID, name, setName, setJoined}: PromptProps) {
+function Prompt({id, setID, name, setJoined}: PromptProps) {
     const { theme } = useSelector((state: ReduxState) => state.theme)
     const { lang } = useSelector((state: ReduxState) => state.lang)
     const navigation = useNavigation<NativeStackNavigationProp<any>>()
     const dispatch = useDispatch()
 
-    function joinGame() {
+    async function joinGame() {
         if (id && name) {
-            joinLobby(id, name)
-            setJoined(true)
-            dispatch(setGame(id))
-            navigation.navigate("joined")
+            const lobby = await joinLobby(id, name)
+
+            if (lobby) {
+                setJoined(true)
+                dispatch(setGame(id))
+                navigation.navigate("joined")
+            } else {
+                Alert.alert(lang ? `Lobby ${id} finnes ikke.` : `Lobby ${id} does not exist.`)
+            }
         }
     }
 
