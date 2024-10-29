@@ -1,12 +1,13 @@
 import Button from '@components/button'
 import PlayerList from '@components/playerList'
 import { createLobby, getLobby, joinLobby } from '@utils/lobby'
-import { useEffect, useState } from 'react'
-import { Dimensions, SafeAreaView, Text, View, TouchableOpacity } from 'react-native'
+import { useState } from 'react'
+import { Dimensions, SafeAreaView, Text, View } from 'react-native'
 import { useSelector } from 'react-redux'
 import Questions from './questions2'
 import React from 'react';
-import { StyleSheet } from 'react-native';
+import FilterButtons from '@components/filterButtons'
+import Rules from '@components/rules'
 
 export default function Game1() {
     const { lang } = useSelector((state: ReduxState) => state.lang)
@@ -21,21 +22,6 @@ export default function Game1() {
     const [players, setPlayers] = useState<string[]>([]);
     const [showExplanation, setShowExplanation] = useState<boolean>(true);
     const [showGameID, setShowGameID] = useState<boolean>(true);
-
-    // Categories filter
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-
-    // Categories list
-    const categories = ["Kind", "Bold", "NTNU"];
-
-    // Function to toggle category selection
-    function toggleCategory(category: string) {
-        setSelectedCategories(prev =>
-            prev.includes(category)
-                ? prev.filter(cat => cat !== category)
-                : [...prev, category]
-        );
-    }
 
     // Start the game when the component mounts
     async function startGame() {
@@ -86,6 +72,7 @@ export default function Game1() {
             setCurrentQuestion(replacePlaceholders(questionText, players));
             setAskedQuestions([...askedQuestions, randomID]);
         }
+
         setRoundStarted(true);
         setShowGameID(false);
     }
@@ -96,8 +83,10 @@ export default function Game1() {
             setFinished(true);
             return;
         }
+
         let randomID: number;
         let question;
+
         do {
             randomID = Math.floor(Math.random() * 100) + 1;
             question = Questions.find(question => question.id === randomID);
@@ -116,6 +105,7 @@ export default function Game1() {
         setRoundStarted(false);
         setAskedQuestions([]);
         setFinished(false);
+
         if (gameID) {
             fetchPlayers(gameID);
         }
@@ -125,48 +115,30 @@ export default function Game1() {
     return (
         <SafeAreaView style={{ backgroundColor: theme.background, height }}>
             <View style={{paddingHorizontal: 8, paddingTop: 32}}>
-                {/* Filter Buttons */}
-                <View style={styles.filterContainer}>
-                    {categories.map(category => (
-                        <TouchableOpacity
-                            key={category}
-                            style={[
-                                styles.filterButton,
-                                selectedCategories.includes(category) ? styles.selectedFilter : {},
-                            ]}
-                            onPress={() => toggleCategory(category)}
-                        >
-                            <Text style={{ color: theme.textColor }}>{category}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </View>
-            <View style={styles.button}>
-                <Text style={{ color: theme.titleTextColor, fontSize: 30, fontWeight: 'bold' }}>
-                    {lang ? "100 Spørsmål" : "100 questions"}
-                </Text>
-                {showGameID && gameID && (
-                    <Text style={{ color: theme.textColor, fontSize: 20 }}>
-                        {`\n${lang ? "Spill ID" : "Game ID"} - ${gameID}`}
-                    </Text>
-                )}
-            </View>
-                {showExplanation && (
-                    <Text style={{ color: theme.textColor, fontSize: 15, marginTop: 8, marginBottom: 8 }}>
-                        {lang ? 
-                            "Kort forklaring på spill regler og hvordan" : 
-                            "Short explanation of game rules and how to play"}
-                    </Text>
-                )}
+                    <View style={{ marginVertical: 8 }}>
+                        <Text style={{ color: theme.titleTextColor, fontSize: 30, fontWeight: 'bold' }}>
+                            {lang ? "100 Spørsmål" : "100 questions"}
+                            {(showGameID && gameID) ? ` - ${gameID}` : ''}
+                        </Text>
+                    </View>
+                    <FilterButtons />
+                <Rules show={showExplanation} />
                 {!roundStarted && (
                     <>
-                    {!gameID && <Button handler={startGame} text={lang ? "Lag en lobby" : "Create a lobby"} />}
-                    <PlayerList gameID={gameID} />
-                    {gameID && <Button handler={startRound} text={lang ? "Start" : "Start"} />}
+                        {!gameID && <Button handler={startGame} text={lang ? "Lag en lobby" : "Create a lobby"} />}
+                        <PlayerList gameID={gameID} />
+                        {gameID && <Button handler={startRound} text={lang ? "Start" : "Start"} />}
                     </>
                 )}
                 {roundStarted && !finished && currentQuestion && (
                     <>
-                        <View style={[styles.questionBox, {backgroundColor: theme.blue}]}>
+                        <View style={{
+                            borderWidth: 1,
+                            padding: 16,
+                            borderRadius: 8,
+                            marginVertical: 16,
+                            backgroundColor: theme.blue
+                        }}>
                             <Text style={{ color: theme.textColor, fontSize: 20 }}>
                                 {currentQuestion}
                             </Text>
@@ -181,7 +153,7 @@ export default function Game1() {
                     </Text>
                 )}
                 {(roundStarted || finished) && (
-                    <View style={styles.button}>
+                    <View style={{ marginVertical: 8 }}>
                         <Button handler={restartQuestions} text={lang ? "Start på nytt" : "Restart Questions"} />
                     </View>
                 )}
@@ -189,30 +161,3 @@ export default function Game1() {
         </SafeAreaView>
     )
 }
-
-// Styles (do not define colors here but in themes and use in return statement)
-const styles = StyleSheet.create({
-    questionBox: {
-        borderWidth: 1,
-        padding: 16,
-        borderRadius: 8,
-        marginVertical: 16,
-    },
-    button: {
-        marginVertical: 8, 
-    },
-    filterContainer: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        marginBottom: 16,
-    },
-    filterButton: {
-        padding: 8,
-        margin: 4,
-        borderWidth: 1,
-        borderRadius: 4,
-    },
-    selectedFilter: {
-        backgroundColor: '#cccccc',
-    },
-});

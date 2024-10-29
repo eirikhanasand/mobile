@@ -5,6 +5,7 @@ import Games from "./src/games.js"
 
 const app = express()
 const port = 3000
+const MAX_PLAYERS = 30
 
 app.use(bodyParser.json())
 
@@ -52,8 +53,14 @@ app.put('/lobby', (req, res) => {
         return res.status(404).json("Missing name.")
     }
 
-    const game = lobbies.get(id) as Lobby
-    const updatedLobby = {...game, players: [...game?.players, name]}
+    
+    const lobby = lobbies.get(id) as Lobby
+
+    if (lobby.players.length >= MAX_PLAYERS) {
+        return res.status(409).json("Full lobby.")
+    }
+
+    const updatedLobby = {...lobby, players: [...lobby?.players, name]}
     lobbies.set(id, updatedLobby)
 
     res.json(updatedLobby)

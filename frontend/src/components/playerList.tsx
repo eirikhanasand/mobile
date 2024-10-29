@@ -1,3 +1,4 @@
+import { MAX_PLAYERS } from "@constants"
 import { getLobby, kick } from "@utils/lobby"
 import { useState } from "react"
 import { ScrollView, Text, TouchableOpacity, View } from "react-native"
@@ -47,17 +48,25 @@ export default function PlayerList({gameID}: PlayerListProps) {
                     color: theme.textColor, 
                     fontSize: 20, 
                     fontWeight: 'bold'
-                }}>{lang ? "Spillere" : "Players"}</Text>
+                }}>{lang ? "Spillere" : "Players"} ({players.length} / {MAX_PLAYERS})</Text>
                 <ScrollView
                     showsVerticalScrollIndicator={false} 
                     scrollEventThrottle={100}
                 >
-                    {players.splice(1).map((player, index) => <View key={index} style={{flexDirection: 'row',justifyContent: 'space-between'}}>
-                        <Text style={{color: 'white', fontSize: 18}}>{player}</Text>
-                        <TouchableOpacity onPress={() => kick(gameID || '', player)}>
-                            <Text style={{color: 'white', fontSize: 18}}>❌</Text>
-                        </TouchableOpacity>
-                    </View>)}
+                    {players.splice(1).map((player, index) => (
+                        <View 
+                            key={index}
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <Text style={{color: 'white', fontSize: 18}}>{player}</Text>
+                            <TouchableOpacity onPress={() => kick(gameID || '', player)}>
+                                <Text style={{color: 'white', fontSize: 18}}>❌</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ))}
                 </ScrollView>
             </>}
         </View>

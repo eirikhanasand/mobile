@@ -141,12 +141,18 @@ function Prompt({id, setID, name, setJoined}: PromptProps) {
         if (id && name) {
             const lobby = await joinLobby(id, name)
 
+            if (lobby === 409) {
+                Alert.alert(lang ? `Lobby ${id} er full.` : `Lobby ${id} is full.`)
+            }
+
+            if (lobby === 404) {
+                Alert.alert(lang ? `Lobby ${id} finnes ikke.` : `Lobby ${id} does not exist.`)
+            }
+
             if (lobby) {
                 setJoined(true)
                 dispatch(setGame(id))
                 navigation.navigate("joined")
-            } else {
-                Alert.alert(lang ? `Lobby ${id} finnes ikke.` : `Lobby ${id} does not exist.`)
             }
         }
     }

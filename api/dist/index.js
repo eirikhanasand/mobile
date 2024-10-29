@@ -4,6 +4,7 @@ import Questions from "./src/questions.js";
 import Games from "./src/games.js";
 const app = express();
 const port = 3000;
+const MAX_PLAYERS = 30;
 app.use(bodyParser.json());
 let games = Games;
 let questions = Questions;
@@ -41,8 +42,11 @@ app.put('/lobby', (req, res) => {
     if (!name) {
         return res.status(404).json("Missing name.");
     }
-    const game = lobbies.get(id);
-    const updatedLobby = Object.assign(Object.assign({}, game), { players: [...game === null || game === void 0 ? void 0 : game.players, name] });
+    const lobby = lobbies.get(id);
+    if (lobby.players.length >= MAX_PLAYERS) {
+        return res.status(409).json("Full lobby.");
+    }
+    const updatedLobby = Object.assign(Object.assign({}, lobby), { players: [...lobby === null || lobby === void 0 ? void 0 : lobby.players, name] });
     lobbies.set(id, updatedLobby);
     res.json(updatedLobby);
 });
@@ -120,3 +124,18 @@ function checkBody(req, res) {
     }
     return id;
 }
+// GET endpoint kort
+// - spill id
+// Genererer ett random tall mellom 1-14 og sender til frontend (må generere nytt 
+// når tiden har gått ut og resultatet har blitt vist)
+// PUT endpoint kort
+// - spill id
+// - navn
+// Endepunkt hvor spilleren sender over / under til
+// GET endpoint resultat
+// - spill id
+// - navn
+// Endepunkt som viser resultatet når tiden har gått ut (frontenden må fetche
+// dette hvert sekund ish). Må sjekke navn mot de som har kommet inn og vise
+// resultat for det navnet. Hvis navnet ikke finnes bør det alltid være feil, 
+// da svarte de ikke før tiden gikk ut

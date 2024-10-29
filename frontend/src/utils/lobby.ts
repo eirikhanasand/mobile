@@ -28,7 +28,7 @@ export async function getLobby(id: string) {
     }
 }
 
-export async function joinLobby(id: string, name: string) {
+export async function joinLobby(id: string, name: string): Promise<Lobby | number> {
     try {
         const response = await fetch(`${API}/lobby`, {
             method: "PUT",
@@ -38,13 +38,22 @@ export async function joinLobby(id: string, name: string) {
             body: JSON.stringify({ id, name })
         })
 
+        if (response.status === 409) {
+            // Full lobby
+            return 409
+        }
+
         if (!response.ok) {
+            // Lobby not found
             throw new Error(`Failed to join lobby ${id} as ${name}. Reason: ${response}`)
         }
 
         return response.json()
     } catch (error) {
         console.error(error)
+
+        // Returns 404 as a catch all return
+        return 404
     }
 }
 
