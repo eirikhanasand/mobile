@@ -147,3 +147,21 @@ function checkBody(req: any, res: any): string | null {
 
     return id
 }
+
+// GET endpoint kort
+// - spill id
+// Genererer ett random tall mellom 1-14 og sender til frontend (må generere nytt 
+// når tiden har gått ut og resultatet har blitt vist)
+
+// PUT endpoint kort
+// - spill id
+// - navn
+// Endepunkt hvor spilleren sender over / under til
+
+// GET endpoint resultat
+// - spill id
+// - navn
+// Endepunkt som viser resultatet når tiden har gått ut (frontenden må fetche
+// dette hvert sekund ish). Må sjekke navn mot de som har kommet inn og vise
+// resultat for det navnet. Hvis navnet ikke finnes bør det alltid være feil, 
+// da svarte de ikke før tiden gikk ut
