@@ -42,12 +42,12 @@ app.put('/lobby', (req, res) => {
     if (!name) {
         return res.status(404).json("Missing name.");
     }
-    const lobby = lobbies.get(id);
+    const lobby = lobbies.get(id.toUpperCase());
     if (lobby.players.length >= MAX_PLAYERS) {
         return res.status(409).json("Full lobby.");
     }
     const updatedLobby = Object.assign(Object.assign({}, lobby), { players: [...lobby === null || lobby === void 0 ? void 0 : lobby.players, name] });
-    lobbies.set(id, updatedLobby);
+    lobbies.set(id.toUpperCase(), updatedLobby);
     res.json(updatedLobby);
 });
 // Fetches the information for the specified lobby
@@ -65,18 +65,23 @@ app.get('/lobby/:id', (req, res) => {
     });
 });
 // Goes to the next question
-app.put('/game', (req, res) => {
-    const id = checkBody(req, res);
-    if (!id)
-        return;
-    const game = lobbies.get(id);
-    const custom = (game === null || game === void 0 ? void 0 : game.questions) || [];
+app.put('/game/:id', (req, res) => {
+    const { id } = req.params;
+    if (!lobbies.has(id)) {
+        return res.status(404).json({
+            error: `Failed to go to the next question. Lobby ${id} does not exist`
+        });
+    }
+    const lobby = lobbies.get(id);
+    const custom = (lobby === null || lobby === void 0 ? void 0 : lobby.questions) || [];
     const mergedQuestions = [...custom, ...questions];
-    const current = (game === null || game === void 0 ? void 0 : game.current) || 0;
+    const current = (lobby === null || lobby === void 0 ? void 0 : lobby.current) || 0;
     const next = current + 1 < mergedQuestions.length ? current + 1 : 0;
+    const updatedLobby = Object.assign(Object.assign({}, lobby), { current: next });
+    lobbies.set(id.toUpperCase(), updatedLobby);
     res.json({
-        players: game.players,
-        status: game === null || game === void 0 ? void 0 : game.status,
+        players: lobby.players,
+        status: lobby === null || lobby === void 0 ? void 0 : lobby.status,
         current: next
     });
 });
