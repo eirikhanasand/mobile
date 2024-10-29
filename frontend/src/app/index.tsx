@@ -174,24 +174,12 @@ function Prompt({id, setID, name, setJoined}: PromptProps) {
                 onStartShouldSetResponder={() => true}
                 onTouchEnd={(e) => e.stopPropagation()} 
                 style={{
-                    backgroundColor: theme.dark,
-                    width: '80%',
-                    height: '25%',
                     borderRadius: 20,
                     justifyContent: 'center',
                     padding: 16,
                     gap: 8
                 }}
             >
-                <Text style={{
-                    color: theme.textColor,
-                    fontSize: 24,
-                    fontWeight: 'bold',
-                    position: 'absolute',
-                    top: 16,
-                    left: 16
-                }}
-                >{lang ? "Bli med i spill" : "Join game"}</Text>
                 <Field 
                     title=""
                     placeholder="ID"

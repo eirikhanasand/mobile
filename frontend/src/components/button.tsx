@@ -16,7 +16,7 @@ export default function Button({handler, text}: ButtonProps) {
                 paddingBottom: 80,
                 paddingTop: 80,
                 marginLeft: 30,
-                marginVertical: 15, // Adds vertical space between buttons
+                marginVertical: 15,
                 width: 350,
                 justifyContent: 'space-between',
                 alignItems: 'center',
