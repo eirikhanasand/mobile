@@ -105,7 +105,8 @@ export async function nextQuestion(id: string) {
             throw new Error(`Failed to go to next question in ${id}.`)
         }
 
-        const next = response.json()
+        const next = await response.json()
+
         return next
     } catch (error) {
         console.error(error)

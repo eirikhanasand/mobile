@@ -17,13 +17,16 @@ export default function PlayerList({gameID}: PlayerListProps) {
     
     async function getPlayers() {
         const lobby = await getLobby(gameID || '')
-        setPlayers(lobby.players)
+
+        if (lobby && lobby.players !== players) {
+            setPlayers(lobby.players)
+        }
     }
 
     setTimeout(() => {
         if (gameID) {
-                getPlayers()
-            }
+            getPlayers()
+        }
     }, 1000)
 
     if (!gameID || !players.length) return null
@@ -63,9 +66,9 @@ export default function PlayerList({gameID}: PlayerListProps) {
                             }}
                         >
                             <Text style={{color: 'white', fontSize: 18}}>{player}</Text>
-                            <TouchableOpacity onPress={() => kick(gameID || '', player)}>
+                            {players[0] === name && <TouchableOpacity onPress={() => kick(gameID || '', player)}>
                                 <Text style={{color: 'white', fontSize: 18}}>❌</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity>}
                         </View>
                     ))}
                 </ScrollView>

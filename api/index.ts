@@ -12,7 +12,7 @@ app.use(bodyParser.json())
 let games: Game[] = Games
 let questions: Question[] = Questions 
 let lobbies: Map<string, Lobby> = new Map()
-const askedQuestions: number[] = []
+let askedQuestions: Map<string, number[]> = new Map()
 
 // General error message
 app.get('/', (_, res) => {
@@ -92,11 +92,12 @@ app.put('/game/:id', (req, res) => {
 
     let randomID: number
     let question
+    const asked = askedQuestions.get(id) as number[]
 
     do {
         randomID = Math.floor(Math.random() * 100) + 1
         question = mergedQuestions[randomID]
-    } while (askedQuestions.includes(randomID) && askedQuestions.length < 100)
+    } while (asked.includes(randomID) && asked.length < 100)
 
     if (question) {
         const title_no = replacePlaceholders(question.title_no, lobby.players)
@@ -107,7 +108,8 @@ app.put('/game/:id', (req, res) => {
             title_en,
             categories: question.categories
         }
-        askedQuestions.push(randomID)
+
+        askedQuestions.set(id, [...asked, randomID])
         const updatedLobby = {...lobby, current}
         lobbies.set(id.toUpperCase(), updatedLobby)
     
@@ -117,7 +119,21 @@ app.put('/game/:id', (req, res) => {
             current,
         })
     }
+})
 
+// Resets game
+app.delete('/game/:id', (req, res) => {
+    const { id } = req.params
+
+    if (!lobbies.has(id)) {
+        return res.status(404).json({
+            error: `Failed to reset questions. Lobby ${id} does not exist`
+        })
+    }
+
+    askedQuestions.delete(id)
+    
+    res.status(201)
 })
 
 // Deletes game

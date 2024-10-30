@@ -12,6 +12,7 @@ type ReduxState = {
     }
     game: {
         gameID: string
+        joined: boolean
     }
 }
 
