@@ -99,8 +99,9 @@ function PromptName() {
             backgroundColor: theme.transparentAndroid,
             height: '100%',
             width: '100%',
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             alignItems: 'center',
+            paddingTop: 150
         }}>
             <View 
                 onStartShouldSetResponder={() => true}
@@ -109,9 +110,10 @@ function PromptName() {
                     width: '80%',
                     height: '25%',
                     borderRadius: 20,
-                    justifyContent: 'center',
+                    justifyContent: 'flex-start',
                     padding: 16,
-                    gap: 8
+                    gap: 8,
+                    paddingBottom: 100,
                 }}
             >
                 <Field
@@ -121,13 +123,8 @@ function PromptName() {
                     placeholder={lang ? "Ola" : "Steve"}
                     autoFocus={true}
                 />
-                <View style={{
-                    position: 'absolute', 
-                    width: '100%', 
-                    left: 16, 
-                    bottom: 16
-                }}>
-                    <Button handler={updateName} text={lang ? "Klar" : "Ready"} />
+                <View style={{ marginTop: 16, alignItems: 'center' }}>
+                    <SmallButton handler={updateName} text={lang ? "Klar" : "Ready"} />
                 </View>
             </View>
         </View>
