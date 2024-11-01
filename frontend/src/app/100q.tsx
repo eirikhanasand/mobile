@@ -11,6 +11,7 @@ import Leave from '@components/leave'
 import { setGame } from '@redux/game'
 import { useNavigation } from 'expo-router'
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types'
+import SmallButton from '@components/smallButtons'
 
 
 export default function Questions() {
@@ -105,7 +106,7 @@ export default function Questions() {
                         justifyContent: 'space-between',
                         paddingRight: 8
                     }}>
-                        <Text style={{ color: theme.titleTextColor, fontSize: 28, fontWeight: 'bold' }}>
+                        <Text style={{ color: theme.titleTextColor, fontSize: 28, fontWeight: 'bold', paddingTop: 32 }}>
                             {lang ? "100 Spørsmål" : "100 questions"}
                             {gameID ? ` - ${gameID}` : ''}
                         </Text>
@@ -117,9 +118,9 @@ export default function Questions() {
                 <Rules show={showExplanation} />
                 {!roundStarted && (
                     <>
-                        {!gameID && <Button handler={startGame} text={lang ? "Lag en lobby" : "Create a lobby"} />}
+                        {!gameID && <SmallButton handler={startGame} text={lang ? "Lag en lobby" : "Create a lobby"} />}
                         <PlayerList gameID={gameID} />
-                        {gameID && <Button handler={startRound} text={lang ? "Start" : "Start"} />}
+                        {gameID && <SmallButton handler={startRound} text={lang ? "Start" : "Start"} />}
                     </>
                 )}
                 {roundStarted && !finished && currentQuestion && (
