@@ -15,6 +15,7 @@ import { setName } from '@redux/name'
 import Field from '@components/field'
 import { setGame, setJoined } from '@redux/game'
 import { ScrollView } from 'react-native'
+import SmallButton from '@components/smallButtons'
 
 type PromptProps = {
     id: string | null
@@ -168,8 +169,9 @@ function Prompt({id, setID, name}: PromptProps) {
             backgroundColor: theme.transparentAndroid,
             height: '100%',
             width: '100%',
-            justifyContent: 'center',
+            justifyContent: 'flex-start',
             alignItems: 'center',
+            paddingTop: 100
         }}>
             <View 
                 onStartShouldSetResponder={() => true}
@@ -188,13 +190,8 @@ function Prompt({id, setID, name}: PromptProps) {
                     setText={setID}
                     autoFocus={true}
                 />
-                <View style={{
-                    position: 'absolute', 
-                    width: '100%', 
-                    left: 16, 
-                    bottom: 16
-                }}>
-                    <Button handler={joinGame} text={lang ? "Bli med" : "Join"} />
+                <View style={{ alignItems: 'center', marginTop: 16 }}>
+                    <SmallButton handler={joinGame} text={lang ? "Bli med" : "Join"} />
                 </View>
             </View>
         </TouchableOpacity>
