@@ -137,18 +137,18 @@ export default function Questions() {
                             </Text>
                         </View>
         
-                        <Button handler={nextQuestion} text={lang ? "Neste spørsmål" : "Next question"} />
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginVertical: 16 }}>
+                            <SmallButton handler={nextQuestion} text={lang ? "Neste spørsmål" : "Next question"} />
+                            {(roundStarted || finished) && (
+                                <SmallButton handler={restartQuestions} text={lang ? "Start på nytt" : "Restart Questions"} />
+                            )}
+                        </View>
                     </>
                 )}
                 {finished && (
                     <Text style={{ color: theme.textColor, fontSize: 20, marginTop: 20 }}>
                         {lang ? "Ferdig" : "Finished"}
                     </Text>
-                )}
-                {(roundStarted || finished) && (
-                    <View style={{ marginVertical: 8 }}>
-                        <Button handler={restartQuestions} text={lang ? "Start på nytt" : "Restart Questions"} />
-                    </View>
                 )}
             </View>
         </SafeAreaView>
