@@ -42,16 +42,22 @@ export default function Button({handler, text, backgroundImage}: ButtonProps) {
                     height: '100%',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent background covering the whole circle
+                    backgroundColor: theme.imageOverlay,
                     borderRadius: 175,
                 }}>
-                    <Text style={{
-                        color: theme.textColor,
-                        fontWeight: 'bold',
-                        fontSize: 28,
-                    }}>
-                        {text}
-                    </Text>
+                    <View style={{
+                            padding: 10,
+                            backgroundColor:theme.textBackground, 
+                            borderRadius: 10,
+                        }}>
+                        <Text style={{
+                            color: theme.textColor,
+                            fontWeight: 'bold',
+                            fontSize: 28,
+                        }}>
+                            {text}
+                        </Text>
+                    </View>
                 </View>
             </ImageBackground>
             ) : (

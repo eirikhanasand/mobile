@@ -14,8 +14,9 @@ const Light = {
     trackBackgroundColor: "#909090",
     dark: "#B8B8B8", 
     red: "#FF6347", 
-    blue: "#ADD8E6"
-
+    blue: "#ADD8E6", 
+    textBackground: 'rgba(255, 255, 255, 0.7)',
+    imageOverlay: 'rgba(0, 0, 0, 0.1)',
 }
 
 export default Light

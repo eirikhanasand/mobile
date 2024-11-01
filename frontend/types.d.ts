@@ -33,6 +33,8 @@ type Theme = {
     dark: string
     red: string
     blue: string
+    textBackground: string
+    imageOverlay: string
 }
 
 type Lobby = {

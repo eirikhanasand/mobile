@@ -14,7 +14,9 @@ const Dark = {
     trackBackgroundColor: "#080808",    
     dark: "#000",
     red: "#8B0000", 
-    blue: "#00008B"
+    blue: "#00008B", 
+    textBackground: 'rgba(0, 0, 0, 0.7)',
+    imageOverlay: 'rgba(0, 0, 0, 0.5)',
 }
 
 export default Dark
