@@ -36,9 +36,9 @@ export default function Field({title, placeholder, autoFocus, text, setText}: Na
                 style={{
                     backgroundColor: theme.contrast,
                     color: theme.textColor,
-                    width: 350,
-                    height: 350,
-                    borderRadius: 170,
+                    width: 250,
+                    height: 50,
+                    borderRadius: 8,
                     textAlign: 'center',
                     justifyContent: 'center',
                     alignItems: 'center',

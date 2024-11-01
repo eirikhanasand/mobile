@@ -6,6 +6,7 @@ import Button from '@components/button'
 import Field from '@components/field'
 import { setName } from '@redux/name'
 import { useEffect, useState } from 'react'
+import SmallButton from '@components/smallButtons'
 
 export default function ExploreScreen() {
     const { lang } = useSelector((state: ReduxState) => state.lang)
@@ -30,23 +31,36 @@ export default function ExploreScreen() {
     return (
         <SafeAreaView style={{backgroundColor: theme.background, height }}>
             <ScrollView style={{paddingHorizontal: 16, gap: 16 }}>
-                <Text style={{ color: theme.titleTextColor, fontSize: 30, fontWeight: 'bold', paddingTop: 32, marginBottom: 16}}>
-                    {lang ? "Innstillinger" : "Settings"}
+            <Text style={{ color: theme.titleTextColor, fontSize: 30, fontWeight: 'bold', paddingTop: 32, marginBottom: 16 }}>
+                {lang ? "Innstillinger" : "Settings"}
+            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                <Text style={{ color: theme.textColor, fontSize: 20, fontWeight: 'bold' }}>
+                    {lang ? "Navn: " : "Name: "}
                 </Text>
-                <Field
-                    title={lang ? "Navn: " : "Name: "} 
-                    text={name} 
-                    setText={setLocalName} 
-                    placeholder={lang ? "Ola" : "Steve"}
-                />
-                <Text style={{ color: theme.textColor, fontSize: 20, marginBottom: 8 , marginTop: 16}}>
-                    {lang ? "Bytt modus:" : "Change mode:"}
-                </Text>
-                <Button handler={handleThemeChange} text={isDark ? (lang ? "Lyst" : "Light") : (lang ? "Mørkt" : "Dark")} />
-                <Text style={{ color: theme.textColor, fontSize: 20, marginBottom: 8, marginTop: 16 }}>
-                    {lang ? "Bytt språk:" : "Change language:"}
-                </Text>
-                <Button handler={handleLangChange} text={lang ? "English" : "Norsk"} />
+                <View style={{ marginLeft: 16 }}>
+                        <Field
+                            title=""
+                            text={name}
+                            setText={setLocalName}
+                            placeholder={lang ? "Ola" : "Steve"}
+                        />
+                    </View>
+                </View>
+                <View style={{ flexDirection: 'column', alignItems: 'flex-start', marginBottom: 8, marginTop: 16 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                        <Text style={{ color: theme.textColor, fontSize: 20, width: 120 }}>
+                            {lang ? "Bytt modus:" : "Change mode:"}
+                        </Text>
+                        <SmallButton handler={handleThemeChange} text={isDark ? (lang ? "Lyst" : "Light") : (lang ? "Mørkt" : "Dark")} />
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                        <Text style={{ color: theme.textColor, fontSize: 20, width: 120 }}>
+                            {lang ? "Bytt språk:" : "Change language:"}
+                        </Text>
+                        <SmallButton handler={handleLangChange} text={lang ? "English" : "Norsk"} />
+                    </View>
+                </View>
                 <View style={{ height: 64 }} />
             </ScrollView>
         </SafeAreaView>
