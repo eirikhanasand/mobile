@@ -36,7 +36,7 @@ export default function FilterButtons() {
                         borderWidth: 1,
                         borderRadius: 4,
                         backgroundColor: selectedCategories.includes(category) 
-                            ? '#cccccc' 
+                            ? theme.contrast 
                             : undefined
                     }}
                     onPress={() => toggleCategory(category)}

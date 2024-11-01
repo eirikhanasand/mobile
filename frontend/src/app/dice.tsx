@@ -1,4 +1,4 @@
-import Button from '@components/button'
+import SmallButton from '@components/smallButtons'
 import { Dimensions, SafeAreaView, Text, View, Image } from 'react-native'
 import { useSelector } from 'react-redux'
 import { DiceGIF } from '@constants'
@@ -43,12 +43,14 @@ export default function Dice() {
     return (
         <SafeAreaView style={{ backgroundColor: theme.background, height }}>
             <View style={{paddingHorizontal: 8}}>
-                <Text style={{ color: theme.titleTextColor, fontSize: 30, fontWeight: 'bold', paddingTop: 32}}>
+                <Text style={{ color: theme.titleTextColor, fontSize: 50, fontWeight: 'bold', paddingTop: 32}}>
                     {lang ? "Terning" : "Dice"}
                 </Text>
-                {<Button handler={() => setStartRoll(true)} text={lang ? 'Kast terning' : 'Throw dice'} />}
-                <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Image source={isRolling ? { uri: DiceGIF } : currentDice} style={dice} />
+                <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 30 }}>
+                    <Image source={isRolling ? { uri: DiceGIF } : currentDice} style={dice} />
+                </View>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 100 }}>
+                    <SmallButton handler={() => setStartRoll(true)} text={lang ? 'Kast terning' : 'Throw dice'} />
                 </View>
             </View>
         </SafeAreaView>
