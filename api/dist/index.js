@@ -85,6 +85,15 @@ app.put('/game/:id', (req, res) => {
             current,
         });
     }
+    else {
+        askedQuestions.delete(id);
+        const { question } = getQuestion(lobby, id);
+        res.status(201).json({
+            players: lobby.players,
+            status: lobby === null || lobby === void 0 ? void 0 : lobby.status,
+            current: question,
+        });
+    }
 });
 // Resets game
 app.delete('/game/:id', (req, res) => {

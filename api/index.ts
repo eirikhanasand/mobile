@@ -108,6 +108,15 @@ app.put('/game/:id', (req, res) => {
             status: lobby?.status,
             current,
         })
+    } else {
+        askedQuestions.delete(id)
+        const { question } = getQuestion(lobby, id)
+
+        res.status(201).json({
+            players: lobby.players,
+            status: lobby?.status,
+            current: question,
+        })
     }
 })
 
