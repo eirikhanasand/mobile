@@ -1,58 +1,50 @@
-import SmallButton from '@components/smallButtons'
-import { Dimensions, SafeAreaView, Text, View, Image } from 'react-native'
-import { useSelector } from 'react-redux'
-import { DiceGIF } from '@constants'
-import React, { useEffect, useState } from 'react'
+import Button from '@components/button';
+import PlayerList from '@components/playerList';
+import { createLobby, joinLobby } from '@utils/lobby';
+import { useState } from 'react';
+import { Dimensions, SafeAreaView, Text, View } from 'react-native';
+import { useSelector } from 'react-redux';
+import DiceRoller from './diceRoller';
 
-export default function Dice() {
-    const { lang } = useSelector((state: ReduxState) => state.lang)
-    const { theme } = useSelector((state: ReduxState) => state.theme)
-    const height = Dimensions.get('window').height
-    const [isRolling, setIsRolling] = useState(false)
-    const [startRoll, setStartRoll] = useState(false)
-    const dice = { width: 200, height: 200 }
+export default function Game2() {
+    const { lang } = useSelector((state: ReduxState) => state.lang);
+    const { theme } = useSelector((state: ReduxState) => state.theme);
+    const { name } = useSelector((state: ReduxState) => state.name);
+    const height = Dimensions.get('window').height;
+    const [gameID, setGameID] = useState<string | null>(null);
 
-    const diceImages = [
-        require('../../public/assets/images/dice_1.png'),
-        require('../../public/assets/images/dice_2.png'),
-        require('../../public/assets/images/dice_3.png'),
-        require('../../public/assets/images/dice_4.png'),
-        require('../../public/assets/images/dice_5.png'),
-        require('../../public/assets/images/dice_6.png')
-    ]
+    // Control dice roll start/stop
+    const [startRoll, setStartRoll] = useState(false);
 
-    const [currentDice, setCurrentDice] = useState(diceImages[0])
+    async function startGame() {
+        const id = await createLobby();
 
-    useEffect(() => {
-        if (startRoll) {
-            rollDice()
+        if (id) {
+            setGameID(id);
+            joinLobby(id, name);
         }
-    }, [startRoll])
-
-    function rollDice() {
-        setIsRolling(true)
-
-        setTimeout(() => {
-            const randomIndex = Math.floor(Math.random() * diceImages.length)
-            setCurrentDice(diceImages[randomIndex])
-            setIsRolling(false)
-            setStartRoll(false)
-        }, 1500)
     }
+
+    const handleRollComplete = () => {
+        setStartRoll(false);
+    };
 
     return (
         <SafeAreaView style={{ backgroundColor: theme.background, height }}>
             <View style={{paddingHorizontal: 8}}>
-                <Text style={{ color: theme.titleTextColor, fontSize: 50, fontWeight: 'bold', paddingTop: 32}}>
-                    {lang ? "Terning" : "Dice"}
+                <Text style={{ color: theme.titleTextColor, fontSize: 30, fontWeight: 'bold', paddingTop: 32}}>
+                    {lang ? "Terning" : "Dice game"}
                 </Text>
-                <View style={{ alignItems: 'center', justifyContent: 'center', marginTop: 30 }}>
-                    <Image source={isRolling ? { uri: DiceGIF } : currentDice} style={dice} />
-                </View>
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 100 }}>
-                    <SmallButton handler={() => setStartRoll(true)} text={lang ? 'Kast terning' : 'Throw dice'} />
-                </View>
+                {gameID && (
+                    <Text style={{ color: theme.textColor, fontSize: 20 }}>
+                        {`\n${lang ? "Spill ID" : "Game ID"} - ${gameID}`}
+                    </Text>
+                )}
+                {!gameID && <Button handler={startGame} text={lang ? 'Start spillet' : 'Start game'} />}
+                <PlayerList gameID={gameID} />
+
+                <DiceRoller startRoll={startRoll} onRollComplete={handleRollComplete} />
             </View>
         </SafeAreaView>
-    )
+    );
 }

@@ -1,6 +1,5 @@
-// DiceRoller.tsx
 import React, { useEffect, useState } from 'react';
-import { Image, View } from 'react-native';
+import { Image, View, TouchableOpacity } from 'react-native';
 
 interface DiceRollerProps {
     startRoll: boolean;
@@ -10,7 +9,7 @@ interface DiceRollerProps {
 const DiceRoller: React.FC<DiceRollerProps> = ({ startRoll, onRollComplete }) => {
     const [isRolling, setIsRolling] = useState(false);
 
-    const diceImages = [ // can make new ones for the dark screen
+    const diceImages = [
         require('../../public/assets/images/dice_1.png'),
         require('../../public/assets/images/dice_2.png'),
         require('../../public/assets/images/dice_3.png'),
@@ -28,29 +27,32 @@ const DiceRoller: React.FC<DiceRollerProps> = ({ startRoll, onRollComplete }) =>
     }, [startRoll]);
 
     const rollDice = () => {
-        setIsRolling(true);
+        if (isRolling) return; // Prevent multiple rolls while one is in progress
 
+        setIsRolling(true);
         setTimeout(() => {
             const randomIndex = Math.floor(Math.random() * diceImages.length);
             setCurrentDice(diceImages[randomIndex]);
             setIsRolling(false);
-            onRollComplete(); // Notify that the roll is complete
+            onRollComplete();
         }, 1500);
     };
 
     return (
-        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            {isRolling ? (
-                <Image
-                    source={{ uri: 'https://media.giphy.com/media/5xtDarpTZP1hgRgReLK/giphy.gif' }} // gif
-                    style={{ width: 200, height: 200 }}
-                />
-            ) : (
-                <Image
-                    source={currentDice}
-                    style={{ width: 200, height: 200 }}
-                />
-            )}
+        <View style={{ alignItems: 'center', justifyContent: 'center', paddingTop: 100 }}>
+            <TouchableOpacity onPress={rollDice} disabled={isRolling}>
+                {isRolling ? (
+                    <Image
+                        source={{ uri: 'https://media.giphy.com/media/5xtDarpTZP1hgRgReLK/giphy.gif' }}
+                        style={{ width: 300, height: 300 }}
+                    />
+                ) : (
+                    <Image
+                        source={currentDice}
+                        style={{ width: 300, height: 300 }}
+                    />
+                )}
+            </TouchableOpacity>
         </View>
     );
 };
