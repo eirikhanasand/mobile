@@ -9,7 +9,7 @@ app.use(bodyParser.json());
 let games = Games;
 let questions = Questions;
 let lobbies = new Map();
-const askedQuestions = [];
+let askedQuestions = new Map();
 // General error message
 app.get('/', (_, res) => {
     res.json({ error: "Invalid endpoint. Please use /games for an overview of existing games." });
@@ -67,14 +67,7 @@ app.put('/game/:id', (req, res) => {
         });
     }
     const lobby = lobbies.get(id);
-    const custom = (lobby === null || lobby === void 0 ? void 0 : lobby.questions) || [];
-    const mergedQuestions = [...custom, ...questions];
-    let randomID;
-    let question;
-    do {
-        randomID = Math.floor(Math.random() * 100) + 1;
-        question = mergedQuestions[randomID];
-    } while (askedQuestions.includes(randomID) && askedQuestions.length < 100);
+    const { question, asked, randomID } = getQuestion(lobby, id);
     if (question) {
         const title_no = replacePlaceholders(question.title_no, lobby.players);
         const title_en = replacePlaceholders(question.title_en, lobby.players);
@@ -83,7 +76,7 @@ app.put('/game/:id', (req, res) => {
             title_en,
             categories: question.categories
         };
-        askedQuestions.push(randomID);
+        askedQuestions.set(id, [...asked, randomID]);
         const updatedLobby = Object.assign(Object.assign({}, lobby), { current });
         lobbies.set(id.toUpperCase(), updatedLobby);
         res.json({
@@ -93,13 +86,48 @@ app.put('/game/:id', (req, res) => {
         });
     }
 });
+// Resets game
+app.delete('/game/:id', (req, res) => {
+    const { id } = req.params;
+    if (!lobbies.has(id)) {
+        return res.status(404).json({
+            error: `Failed to reset questions. Lobby ${id} does not exist.`
+        });
+    }
+    askedQuestions.delete(id);
+    const lobby = lobbies.get(id);
+    const { question, asked, randomID } = getQuestion(lobby, id);
+    if (question) {
+        const title_no = replacePlaceholders(question.title_no, lobby.players);
+        const title_en = replacePlaceholders(question.title_en, lobby.players);
+        const current = {
+            title_no,
+            title_en,
+            categories: question.categories
+        };
+        askedQuestions.set(id, [...asked, randomID]);
+        const updatedLobby = Object.assign(Object.assign({}, lobby), { current });
+        lobbies.set(id.toUpperCase(), updatedLobby);
+        return res.status(201).json({
+            players: lobby.players,
+            status: lobby === null || lobby === void 0 ? void 0 : lobby.status,
+            current,
+        });
+    }
+    res.status(500).json({ message: `Failed to get question after reset. Unknown result.` });
+});
 // Deletes game
 app.delete('/lobby', (req, res) => {
     const id = checkBody(req, res);
     if (!id)
         return;
+    if (!lobbies.has(id)) {
+        return res.status(404).json({
+            error: `Failed to delete, lobby ${id} does not exist`
+        });
+    }
     lobbies.delete(id);
-    res.status(201);
+    res.status(201).json({ message: `Game ${id} has been deleted.` });
 });
 // Removes player from game
 app.put('/kick', (req, res) => {
@@ -142,6 +170,18 @@ function replacePlaceholders(question, players) {
         const randomIndex = Math.floor(Math.random() * players.length);
         return players[randomIndex];
     });
+}
+function getQuestion(lobby, id) {
+    const custom = (lobby === null || lobby === void 0 ? void 0 : lobby.questions) || [];
+    const mergedQuestions = [...custom, ...questions];
+    let randomID;
+    let question;
+    const asked = askedQuestions.get(id) || [];
+    do {
+        randomID = Math.floor(Math.random() * 100) + 1;
+        question = mergedQuestions[randomID];
+    } while (asked.includes(randomID) && asked.length < 100);
+    return { question, asked, randomID };
 }
 // GET endpoint kort
 // - spill id
