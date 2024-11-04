@@ -114,7 +114,6 @@ export async function nextQuestion(id: string) {
 }
 
 export async function resetQuestions(id: string) {
-    console.log("recieved")
     try {
         const response = await fetch(`${API}/game/${id}`, { method: "DELETE" })
     
