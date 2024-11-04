@@ -47,7 +47,7 @@ export default function Button({handler, text, backgroundImage}: ButtonProps) {
                 }}>
                     <View style={{
                             padding: 10,
-                            backgroundColor:theme.textBackground, 
+                            backgroundColor:theme.contrast, 
                             borderRadius: 10,
                         }}>
                         <Text style={{
