@@ -118,7 +118,6 @@ export async function resetQuestions(id: string) {
         const response = await fetch(`${API}/game/${id}`, { method: "DELETE" })
     
         if (!response.ok) {
-            console.log("here")
             throw new Error(`Failed to reset questions for ${id}. Error code: ${response.status}`)
         }
 
