@@ -1,18 +1,15 @@
-import Button from '@components/button'
 import PlayerList from '@components/playerList'
-import { createLobby, getLobby, joinLobby, kick } from '@utils/lobby'
+import { createLobby, getLobby, joinLobby, kick, resetQuestions } from '@utils/lobby'
 import { useState } from 'react'
 import { Dimensions, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import FilterButtons from '@components/filterButtons'
 import Rules from '@components/rules'
 import { nextQuestion as nextQuestionAPI } from "@utils/lobby"
 import Leave from '@components/leave'
-import { setGame } from '@redux/game'
 import { useNavigation } from 'expo-router'
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types'
 import SmallButton from '@components/smallButtons'
-
 
 export default function Questions() {
     const { lang } = useSelector((state: ReduxState) => state.lang)
@@ -78,14 +75,13 @@ export default function Questions() {
     }
 
     // Restart the questions
-    function restartQuestions() {
-        setCurrentQuestion(null)
-        setRoundStarted(false)
+    async function restartQuestions() {
         setAskedQuestions([])
+        setRoundStarted(false)
         setFinished(false)
 
         if (gameID) {
-            fetchPlayers(gameID)
+            resetQuestions(gameID)
         }
     }
 

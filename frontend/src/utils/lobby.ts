@@ -19,7 +19,7 @@ export async function getLobby(id: string) {
         const response = await fetch(`${API}/lobby/${id}`)
 
         if (!response.ok) {
-            throw new Error(`Failed to get lobby with ID ${id}`)
+            throw new Error(`Failed to get lobby with ID ${id}. Error code: ${response.status}`)
         }
 
         return response.json()
@@ -45,7 +45,7 @@ export async function joinLobby(id: string, name: string): Promise<Lobby | numbe
 
         if (!response.ok) {
             // Lobby not found
-            throw new Error(`Failed to join lobby ${id} as ${name}. Reason: ${response}`)
+            throw new Error(`Failed to join lobby ${id} as ${name}. Error code: ${response.status}`)
         }
 
         return response.json()
@@ -68,7 +68,7 @@ export async function deleteLobby(id: string) {
         })
 
         if (!response.ok) {
-            throw new Error(`Failed to delete lobby ${id}.`)
+            throw new Error(`Failed to delete lobby ${id}. Error code: ${response.status}`)
         }
 
         return response.json()
@@ -88,7 +88,7 @@ export async function kick(id: string, name: string) {
         })
 
         if (!response.ok) {
-            throw new Error(`Failed to kick ${name} from ${id}.`)
+            throw new Error(`Failed to kick ${name} from ${id}. Error code: ${response.status}`)
         }
 
         return response.json()
@@ -102,7 +102,23 @@ export async function nextQuestion(id: string) {
         const response = await fetch(`${API}/game/${id}`, { method: "PUT" })
 
         if (!response.ok) {
-            throw new Error(`Failed to go to next question in ${id}.`)
+            throw new Error(`Failed to go to next question in ${id}. Error code: ${response.status}`)
+        }
+
+        const next = await response.json()
+
+        return next
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+export async function resetQuestions(id: string) {
+    try {
+        const response = await fetch(`${API}/game/${id}`, { method: "DELETE" })
+    
+        if (!response.ok) {
+            throw new Error(`Failed to reset questions for ${id}. Error code: ${response.status}`)
         }
 
         const next = await response.json()
