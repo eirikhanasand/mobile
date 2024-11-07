@@ -23,6 +23,7 @@ function Layout() {
         <View style={{flex: 1}}>
             <Tabs screenOptions={({route}) => ({
                 tabBarActiveTintColor: theme.orange,
+                tabBarInactiveTintColor: theme.textColor,
                 headerShown: false,
                 tabBarStyle: {
                     backgroundColor: theme.contrast,

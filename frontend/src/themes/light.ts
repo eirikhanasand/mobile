@@ -4,7 +4,7 @@ const Light = {
     contrast: "#A569BD",
     transparent: "#77777733",
     transparentAndroid: "#99999960",
-    orange: "#FF2800",
+    orange: "#FF7417",
     textColor: "black",
     titleTextColor: "#111111",
     oppositeTextColor: "black",
