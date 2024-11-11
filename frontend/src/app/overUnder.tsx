@@ -112,8 +112,6 @@ export default function OverUnder() {
         }
     }, [])
 
-    console.log("Card", card, randomType)
-
     return (
         <SafeAreaView style={{backgroundColor: theme.background, height }}>
             <View>
@@ -145,7 +143,10 @@ export default function OverUnder() {
                     </>
                 )}
             </View>
-            {card && roundStarted && <Cards card={card} randomType={randomType} />}
+            {card && (roundStarted || !gameID) && <Cards 
+                card={card} 
+                randomType={randomType} 
+            />}
             <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
                 {!gameID && <Button 
                     handler={() => gameID ? guess('higher') : next()} 

@@ -41,7 +41,9 @@ export async function getScores(gameID: string) {
 // Posts a guess for the next card for the specified lobby with the given name
 export async function postGuess({ gameID, name, guess}: PostGuessProps) {
     try {
-        const response = await fetch(`${API}/card/${gameID}/${name}/${guess}`)
+        const response = await fetch(`${API}/card/${gameID}/${name}/${guess}`, {
+            method: 'POST'
+        })
 
         if (!response.ok) {
             throw new Error(await response.text())
