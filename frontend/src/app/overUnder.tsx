@@ -116,17 +116,11 @@ export default function OverUnder() {
         <SafeAreaView style={{backgroundColor: theme.background, height }}>
             <View>
                 <Text style={{
-                    fontSize: 24,
+                    fontSize: 30,
                     fontWeight: 'bold',
                     textAlign: 'center',
-                    color: theme.textColor
+                    color: theme.titleTextColor
                 }}>Guess{gameID && ` - ${gameID}`}</Text>
-                <Text style={{
-                    fontSize: 24,
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    color: theme.textColor
-                }}></Text>
                 {!roundStarted && (
                     <>
                         {!gameID && <SmallButton 

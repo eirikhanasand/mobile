@@ -89,7 +89,13 @@ export default function Questions() {
                         justifyContent: 'space-between',
                         paddingRight: 8
                     }}>
-                        <Text style={{ color: theme.titleTextColor, fontSize: 28, fontWeight: 'bold', paddingTop: 32 }}>
+                        <Text style={{ 
+                            color: theme.titleTextColor, 
+                            fontSize: 30, 
+                            fontWeight: 'bold', 
+                            textAlign: 'center',
+                            width: '100%'
+                        }}>
                             {lang ? "100 Spørsmål" : "100 questions"}
                             {gameID ? ` - ${gameID}` : ''}
                         </Text>
