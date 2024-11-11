@@ -1,13 +1,13 @@
-import { Text, TouchableOpacity, View } from "react-native";
-import { useSelector } from "react-redux";
+import { Text, TouchableOpacity, View } from "react-native"
+import { useSelector } from "react-redux"
 
 type ButtonProps = {
-    handler: () => void;
-    text: string;
-};
+    handler: () => void
+    text: string
+}
 
 export default function SmallButton({ handler, text }: ButtonProps) {
-    const { theme } = useSelector((state: ReduxState) => state.theme);
+    const { theme } = useSelector((state: ReduxState) => state.theme)
 
     return (
         <TouchableOpacity
@@ -40,5 +40,5 @@ export default function SmallButton({ handler, text }: ButtonProps) {
                 </Text>
             </View>
         </TouchableOpacity>
-    );
+    )
 }

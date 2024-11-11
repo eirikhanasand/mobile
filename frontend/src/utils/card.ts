@@ -1,0 +1,55 @@
+import { API } from "@constants"
+
+type PostGuessProps = {
+    gameID: string
+    name: string
+    guess: '0' | '1'
+}
+
+// Fetches the current card for a specific game
+export default async function getCard(gameID: string) {
+    try {
+        const response = await fetch(`${API}/card/${gameID}`)
+
+        if (!response.ok) {
+            throw new Error(await response.text())
+        }
+
+        const data = await response.json()
+        return data.card
+    } catch (error) {
+        console.error(`Failed to fetch: ${error}`)
+    }
+}
+
+// Fetches the current card scores for a specific lobby
+export async function getScores(gameID: string) {
+    try {
+        const response = await fetch(`${API}/card/${gameID}`)
+
+        if (!response.ok) {
+            throw new Error(await response.text())
+        }
+
+        const data = await response.json()
+        return data
+    } catch (error) {
+        console.error(`Failed to fetch: ${error}`)
+    }
+}
+
+// Posts a guess for the next card for the specified lobby with the given name
+export async function postGuess({ gameID, name, guess}: PostGuessProps) {
+    try {
+        const response = await fetch(`${API}/card/${gameID}/${name}/${guess}`)
+
+        if (!response.ok) {
+            throw new Error(await response.text())
+        }
+
+        const data = await response.json()
+        return data
+    } catch (error) {
+        console.error(`Failed to fetch: ${error}`)
+    }
+}

@@ -17,7 +17,7 @@ export default function TabLayout() {
 function Layout() {
     const { lang } = useSelector((state: ReduxState) => state.lang)
     const { theme, isDark } = useSelector((state: ReduxState) => state.theme)
-    const hidden = ["100q", "joined", "questions2", "dice"]
+    const hidden = ["100q", "joined", "questions2", "dice", "diceRoller", "overUnder"]
 
     return (
         <View style={{flex: 1}}>
@@ -35,8 +35,11 @@ function Layout() {
                     options={{
                         title: lang ? 'Hjem' : 'Home',
                         tabBarIcon: ({ color, focused }) => (
-                            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-                        ),
+                            <TabBarIcon 
+                                name={focused ? 'home' : 'home-outline'} 
+                                color={color} 
+                            />
+                        )
                     }}
                 />
                 <Tabs.Screen
@@ -44,12 +47,16 @@ function Layout() {
                     options={{
                         title: lang ? 'Innstillinger' : 'Settings',
                         tabBarIcon: ({ color, focused }) => (
-                            <TabBarIcon name={focused ? 'menu' : 'menu-outline'} color={color} />
+                            <TabBarIcon 
+                                name={focused ? 'menu' : 'menu-outline'} 
+                                color={color} 
+                            />
                         ),
                     }}
                 />
                 <Tabs.Screen name="100q" />
                 <Tabs.Screen name="dice" />
+                <Tabs.Screen name="overUnder" />
             </Tabs>
             <StatusBar style={isDark ? "light" : "dark"} />
         </View>

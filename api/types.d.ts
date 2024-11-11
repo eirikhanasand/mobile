@@ -25,3 +25,18 @@ type Player = {
     id: string
     name: string
 }
+
+type Score = {
+    name: string
+    score: number
+}
+
+type Card = {
+    number: number
+    time: number
+}
+
+type Guess = {
+    name: string
+    value: boolean
+}

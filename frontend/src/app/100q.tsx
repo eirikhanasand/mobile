@@ -21,7 +21,6 @@ export default function Questions() {
     const [roundStarted, setRoundStarted] = useState<boolean>(false)
     const [askedQuestions, setAskedQuestions] = useState<number[]>([])
     const [finished, setFinished] = useState<boolean>(false)
-    const [players, setPlayers] = useState<string[]>([])
     const [showExplanation, setShowExplanation] = useState<boolean>(true)
     const navigation = useNavigation<NativeStackNavigationProp<any>>()
 
@@ -32,19 +31,7 @@ export default function Questions() {
         if (id) {
             setGameID(id)
             joinLobby(id, name)
-            fetchPlayers(id)
             setShowExplanation(false)
-        }
-    }
-
-    // Fetch the players in the lobby
-    async function fetchPlayers(lobbyID: string) {
-        const lobby = await getLobby(lobbyID)
-
-        if (lobby && Array.isArray(lobby.players)) {
-            setPlayers(lobby.players)
-        } else {
-            console.error('Invalid lobby structure or no players found')
         }
     }
 

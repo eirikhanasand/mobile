@@ -33,8 +33,8 @@ export default function HomeScreen() {
     const [id, setID] = useState<string | null>(null)
     const dispatch = useDispatch()
 
-    const game1 = require('../../public/assets/images/game1.jpg')
-    const game2 = require('../../public/assets/images/game2.jpg')
+    const dicePicture = require('../../public/assets/images/dice.jpg')
+    const oneHundredQuestionsPicture = require('../../public/assets/images/100q.jpg')
     const joinGamePicture = require('../../public/assets/images/joinGame.jpg')
     const cardsGamePicture = require('../../public/assets/images/cardsGame.jpg')
 
@@ -46,6 +46,11 @@ export default function HomeScreen() {
     // Navigation handler for dice
     function handleDice() {
         navigation.navigate("dice")
+    }
+
+    // Navigation handler for Over/Under (playing cards)
+    function handleCards() {
+        navigation.navigate("overUnder")
     }
 
     function promptGame() {
@@ -71,9 +76,26 @@ export default function HomeScreen() {
                 </Text>
             </View> 
             <View style={{display: 'flex',  paddingBottom: 20}}>
-                <Button handler={promptGame} text={lang ? "Bli med i spill" : "Join game"} backgroundImage={joinGamePicture}/>
-                <Button handler={handle100Q} text={lang ? "100 spørsmål" : "100 questions"} backgroundImage={game1}/> 
-                <Button handler={handleDice} text={lang ? "Terning" : "Dice"} backgroundImage={game2}/>   
+                <Button 
+                    handler={promptGame} 
+                    text={lang ? "Bli med i spill" : "Join game"} 
+                    backgroundImage={joinGamePicture}
+                />
+                <Button 
+                    handler={handle100Q} 
+                    text={lang ? "100 spørsmål" : "100 questions"} 
+                    backgroundImage={oneHundredQuestionsPicture}
+                /> 
+                <Button 
+                    handler={handleDice} 
+                    text={lang ? "Terning" : "Dice"} 
+                    backgroundImage={dicePicture}
+                />   
+                <Button 
+                    handler={handleCards} 
+                    text={lang ? "Over/Under" : "Over/Under"} 
+                    backgroundImage={cardsGamePicture}
+                /> 
             </View>
             {!name && <PromptName />}
             {id !== null && !joined && <Prompt 
