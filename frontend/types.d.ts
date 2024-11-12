@@ -19,6 +19,9 @@ type ReduxState = {
         gameID: string
         joined: boolean
     }
+    music: {
+        playing: boolean
+    }
 }
 
 type Theme = {

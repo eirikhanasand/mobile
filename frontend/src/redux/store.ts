@@ -5,6 +5,7 @@ import LangReducer from "./lang"
 import ThemeReducer from "./theme"
 import NameReducer from "./name"
 import GameReducer from "./game"
+import MusicReducer from "./music"
 import { thunk } from "redux-thunk"
 
 // Combines all reducers
@@ -12,7 +13,8 @@ const reducers = combineReducers({
     theme: ThemeReducer,
     lang: LangReducer,
     name: NameReducer,
-    game: GameReducer
+    game: GameReducer,
+    music: MusicReducer
 })
 
 // Function to localstore redux state with key:root and AsyncStorage, as well as
@@ -24,7 +26,8 @@ const saveState = {
         "lang",
         "theme",
         "name",
-        "game"
+        "game",
+        "music"
     ]
 }
 
