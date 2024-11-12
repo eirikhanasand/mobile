@@ -24,7 +24,6 @@ export default function FilterButtons() {
         <View style={{
             flexDirection: 'row',
             flexWrap: 'wrap',
-            marginBottom: 16,
             width: '50%',
         }}>
             {categories.map(category => (

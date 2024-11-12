@@ -40,16 +40,19 @@ export default function HomeScreen() {
 
     // Navigation handler for game 1
     function handle100Q() {
+        dispatch(setGame(null))
         navigation.navigate("100q")
     }
     
     // Navigation handler for dice
     function handleDice() {
+        dispatch(setGame(null))
         navigation.navigate("dice")
     }
 
     // Navigation handler for Over/Under (playing cards)
     function handleCards() {
+        dispatch(setGame(null))
         navigation.navigate("overUnder")
     }
 

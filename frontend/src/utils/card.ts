@@ -25,7 +25,7 @@ export default async function getCard(gameID: string) {
 // Fetches the current card scores for a specific lobby
 export async function getScores(gameID: string) {
     try {
-        const response = await fetch(`${API}/card/${gameID}`)
+        const response = await fetch(`${API}/scores/${gameID}`)
 
         if (!response.ok) {
             throw new Error(await response.text())

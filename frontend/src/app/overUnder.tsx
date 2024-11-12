@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import Card, { getRandomCard } from '@components/card'
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { SvgXml } from 'react-native-svg'
 import Backside from '@assets/images/backside.svg'
 import getCard, { getScores, postGuess } from '@utils/card'
 import SmallButton from '@components/smallButtons'
-import { createLobby, joinLobby } from '@utils/lobby'
+import { createLobby, joinLobby, kick } from '@utils/lobby'
 import { 
     SafeAreaView, 
     Text, 
@@ -14,6 +14,11 @@ import {
     Dimensions 
 } from 'react-native'
 import PlayerList from '@components/playerList'
+import LeaderBoard from '@components/leaderboard'
+import { setGame } from '@redux/game'
+import { useNavigation } from 'expo-router'
+import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types'
+import Leave from '@components/leave'
 
 type ButtonProps = {
     handler: () => void
@@ -34,12 +39,15 @@ export default function OverUnder() {
     const { theme } = useSelector((state: ReduxState) => state.theme)
     const { name } = useSelector((state: ReduxState) => state.name)
     const { lang } = useSelector((state: ReduxState) => state.lang)
-    const [gameID, setGameID] = useState<string | null>(null)
+    const { gameID } = useSelector((state: ReduxState) => state.game)
     const [roundStarted, setRoundStarted] = useState<boolean>(false)
     const height = Dimensions.get('window').height
     const [card, setCard] = useState<OneToFourteen>()
     const [randomType, setRandomType] = useState<CardType>('hearts')
     const [scores, setScores] = useState<Score[]>([])
+    const navigation = useNavigation<NativeStackNavigationProp<any>>()
+    const dispatch = useDispatch()
+    const gameModeText = lang ? '100 Spørsmål' : '100 Questions'
     
     async function guess(value: 'higher' | 'lower') {
         const response = await postGuess({ 
@@ -59,7 +67,7 @@ export default function OverUnder() {
         const id = await createLobby()
         
         if (id) {
-            setGameID(id)
+            dispatch(setGame(id))
             joinLobby(id, name)
         }
     }
@@ -71,6 +79,10 @@ export default function OverUnder() {
             setRandomType(random.type)
             setCard(random.number)
         }
+    }
+
+    function switchGameMode() {
+        navigation.navigate('100q')   
     }
     
     useEffect(() => {
@@ -85,7 +97,7 @@ export default function OverUnder() {
         async function updateScores() {
             const scores = await getScores(gameID as string)
 
-            if (scores) {
+            if (scores && !('error' in scores)) {
                 setScores(scores)
             }
         }
@@ -112,15 +124,45 @@ export default function OverUnder() {
         }
     }, [])
 
+    function leave() {
+        kick(gameID as string, name)
+        dispatch(setGame(null))
+        setRoundStarted(false)
+        navigation.navigate("index")
+    }
+
     return (
         <SafeAreaView style={{backgroundColor: theme.background, height }}>
             <View>
-                <Text style={{
-                    fontSize: 30,
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    color: theme.titleTextColor
-                }}>Guess{gameID && ` - ${gameID}`}</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                    <Text style={{
+                        fontSize: 30,
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                        color: theme.titleTextColor
+                    }}>
+                        Guess{gameID && ` - ${gameID}`}
+                    </Text>
+                    {gameID && <TouchableOpacity
+                        style={{
+                            padding: 8,
+                            marginVertical: 4,
+                            top: -5,
+                            right: 25,
+                            borderWidth: 1,
+                            borderRadius: 4,
+                        }}
+                        onPress={switchGameMode}
+                    >
+                        <Text style={{ color: theme.textColor }}>{gameModeText}</Text>
+                    </TouchableOpacity>}
+                    {gameID && <TouchableOpacity 
+                            style={{ position: 'absolute', right: 8 }} 
+                            onPress={leave}
+                        >
+                            <Leave />
+                        </TouchableOpacity>}
+                </View>
                 {!roundStarted && (
                     <>
                         {!gameID && <SmallButton 
@@ -137,6 +179,7 @@ export default function OverUnder() {
                     </>
                 )}
             </View>
+            {gameID && roundStarted && <LeaderBoard gameID={gameID} />}
             {card && (roundStarted || !gameID) && <Cards 
                 card={card} 
                 randomType={randomType} 
@@ -163,6 +206,7 @@ export default function OverUnder() {
 
 function Button({handler, text}: ButtonProps) {
     const { theme } = useSelector((state: ReduxState) => state.theme)
+
     return (
         <TouchableOpacity 
             style={{

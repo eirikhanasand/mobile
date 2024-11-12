@@ -1,12 +1,17 @@
 import Leave from "@components/leave"
 import PlayerList from "@components/playerList"
-import { setGame, setJoined } from "@redux/game"
+import { setGame } from "@redux/game"
 import { getLobby, kick } from "@utils/lobby"
 import { useNavigation } from "expo-router"
 import { useEffect, useState } from "react"
 import { Dimensions, SafeAreaView, Text, TouchableOpacity, View } from "react-native"
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types"
 import { useDispatch, useSelector } from "react-redux"
+
+type OneHundredQuestionsProps = {
+    text: string
+    gameID: string
+}
 
 export default function Joined() {
     const { gameID } = useSelector((state: ReduxState) => state.game)
@@ -65,7 +70,7 @@ export default function Joined() {
                     width: '100%'
                 }}>
                     <Text style={{ 
-                        color: theme.textColor, 
+                        color: theme.titleTextColor, 
                         fontSize: 30, 
                         fontWeight: 'bold', 
                         left: 8
@@ -73,23 +78,35 @@ export default function Joined() {
                         Lobby - {gameID}
                     </Text>
                     <TouchableOpacity onPress={leave}>
-                        <Leave color={theme.textColor} />
+                        <Leave color={theme.titleTextColor} />
                     </TouchableOpacity>
                 </View>
-                {!text && <PlayerList gameID={gameID} />}
-                {text && <View style={{
-                    backgroundColor: theme.blue,
-                    borderRadius: 8,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}>
-                    <Text style={{ 
-                        color: theme.textColor,
-                        padding: 8,
-                        fontSize: 20
-                    }}>{text}</Text>
-                </View>}
+                <OneHundredQuestions text={text} gameID={gameID} />
             </View>
         </SafeAreaView>
+    )
+}
+
+function OneHundredQuestions({text, gameID}: OneHundredQuestionsProps) {
+    const { theme } = useSelector((state: ReduxState) => state.theme)
+
+    return (
+        <>
+            {!text && <PlayerList gameID={gameID} />}
+            {text && <View style={{
+                backgroundColor: theme.blue,
+                borderRadius: 8,
+                justifyContent: 'center',
+                alignItems: 'center',
+            }}>
+                <Text style={{ 
+                    color: theme.textColor,
+                    padding: 8,
+                    fontSize: 20
+                }}>
+                    {text}
+                </Text>
+            </View>}
+        </>
     )
 }
