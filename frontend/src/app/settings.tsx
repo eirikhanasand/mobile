@@ -1,4 +1,4 @@
-import { Dimensions, SafeAreaView, Text, View, ScrollView } from 'react-native'
+import { Dimensions, SafeAreaView, Text, View, ScrollView, Platform } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeLang } from '../redux/lang'
 import { changeTheme } from '../redux/theme'
@@ -67,7 +67,7 @@ export default function SettingsScreen() {
                 color: theme.titleTextColor, 
                 fontSize: 30, 
                 fontWeight: 'bold', 
-                paddingTop: 32, 
+                paddingTop: Platform.OS !== "ios" ? 40 : undefined,
                 marginBottom: 16 
             }}>
                 {lang ? "Innstillinger" : "Settings"}

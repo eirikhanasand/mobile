@@ -1,7 +1,7 @@
 import PlayerList from '@components/playerList'
 import { createLobby, joinLobby, kick, resetQuestions } from '@utils/lobby'
 import { useState } from 'react'
-import { Dimensions, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Platform, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import FilterButtons from '@components/filterButtons'
 import Rules from '@components/rules'
@@ -93,6 +93,7 @@ export default function Questions() {
                     <View style={{ 
                         flexDirection: 'row', 
                         justifyContent: 'space-between',
+                        paddingTop: Platform.OS !== "ios" ? 40 : undefined,
                     }}>
                         <Text style={{ 
                             color: theme.titleTextColor, 

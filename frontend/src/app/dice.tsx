@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Dimensions, SafeAreaView, Text, View } from 'react-native'
+import { Dimensions, Platform, SafeAreaView, Text, View } from 'react-native'
 import { useSelector } from 'react-redux'
 import DiceRoller from '@components/diceRoller'
 
@@ -22,7 +22,8 @@ export default function Dice() {
                     color: theme.titleTextColor, 
                     fontSize: 30, 
                     fontWeight: 'bold', 
-                    textAlign: 'center'
+                    textAlign: 'center',
+                    paddingTop: Platform.OS !== "ios" ? 40 : undefined,
                 }}>
                     {lang ? "Terning" : "Dice"}
                 </Text>

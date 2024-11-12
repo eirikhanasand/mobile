@@ -11,7 +11,8 @@ import {
     Text, 
     View, 
     TouchableOpacity, 
-    Dimensions 
+    Dimensions, 
+    Platform
 } from 'react-native'
 import PlayerList from '@components/playerList'
 import LeaderBoard from '@components/leaderboard'
@@ -134,14 +135,14 @@ export default function OverUnder() {
     return (
         <SafeAreaView style={{backgroundColor: theme.background, height }}>
             <View>
-                <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-around', paddingTop: Platform.OS !== "ios" ? 40 : undefined}}>
                     <Text style={{
                         fontSize: 30,
                         fontWeight: 'bold',
                         textAlign: 'center',
                         color: theme.titleTextColor
                     }}>
-                        Guess{gameID && ` - ${gameID}`}
+                        {lang ? "Gjett" : "Guess"} {gameID && ` - ${gameID}`}
                     </Text>
                     {gameID && <TouchableOpacity
                         style={{
@@ -187,7 +188,7 @@ export default function OverUnder() {
             <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
                 {!gameID && <Button 
                     handler={() => gameID ? guess('higher') : next()} 
-                    text="Next" 
+                    text={lang ? "Neste" : "Next"} 
                 />}
                 {gameID && roundStarted && <>
                     <Button 
