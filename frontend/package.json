@@ -6,8 +6,8 @@
         "start": "react-native start",
         "starte": "expo start",
         "reset-project": "node ./scripts/reset-project.js",
-        "android": "expo run:android",
         "ios": "expo run:ios",
+        "android": "react-native run-android",
         "web": "expo start --web",
         "test": "jest --watchAll",
         "lint": "expo lint"
