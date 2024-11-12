@@ -9,6 +9,7 @@ let questions = Questions;
 let lobbies = new Map();
 let askedQuestions = new Map();
 let cards = new Map();
+let previousCards = new Map();
 let scores = new Map();
 let guesses = new Map();
 // General error message
@@ -20,6 +21,14 @@ app.get('/lobby/:id', (req, res) => {
     const { id } = req.params;
     const game = lobbies.get(id);
     const current = (game === null || game === void 0 ? void 0 : game.current) ? game === null || game === void 0 ? void 0 : game.current : null;
+    if (!game) {
+        return res.json({
+            players: [],
+            status: 'pending',
+            current,
+            questions: null
+        });
+    }
     res.json({
         players: game.players,
         status: game === null || game === void 0 ? void 0 : game.status,
@@ -61,6 +70,7 @@ app.get('/scores/:id', (req, res) => {
         return res.status(200).json({ error: "No guesses yet." });
     }
     const card = cards.get(id);
+    const previous = previousCards.get(id) || { number: 0 };
     if (!card) {
         return res.status(200).json({ error: "Round not started yet." });
     }
@@ -77,11 +87,21 @@ app.get('/scores/:id', (req, res) => {
     }
     const lobbyScores = scores.get(id);
     if (!lobbyScores) {
-        const updatedScores = calculateScores(activeCard, lobbyGuesses, []);
+        if (currentCard.number !== previous.number) {
+            const updatedScores = calculateScores(activeCard, lobbyGuesses, []);
+            scores.set(id, updatedScores);
+            previousCards.set(id, currentCard);
+            return res.json(updatedScores);
+        }
+        return res.json(lobbyScores);
+    }
+    if (currentCard.number !== previous.number || lobbyScores.length < lobbyGuesses.length) {
+        const updatedScores = calculateScores(activeCard, lobbyGuesses, lobbyScores);
+        scores.set(id, updatedScores);
+        previousCards.set(id, currentCard);
         return res.json(updatedScores);
     }
-    const updatedScores = calculateScores(activeCard, lobbyGuesses, lobbyScores);
-    res.json(updatedScores);
+    return res.json(lobbyScores);
 });
 // Creates a new lobby
 app.post('/lobby', (_, res) => {

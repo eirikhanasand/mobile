@@ -12,6 +12,7 @@ let questions: Question[] = Questions
 let lobbies: Map<string, Lobby> = new Map()
 let askedQuestions: Map<string, number[]> = new Map()
 let cards: Map<string, Card[]> = new Map()
+let previousCards: Map<string, Card> = new Map()
 let scores: Map<string, Score[]> = new Map()
 let guesses: Map<string, Guess[]> = new Map()
 
@@ -26,6 +27,15 @@ app.get('/lobby/:id', (req, res) => {
 
     const game = lobbies.get(id) as Lobby
     const current = game?.current ? game?.current : null
+
+    if (!game) {
+        return res.json({
+            players: [],
+            status: 'pending',
+            current,
+            questions: null
+        })
+    }
 
     res.json({
         players: game.players,
@@ -79,6 +89,7 @@ app.get('/scores/:id', (req, res) => {
     }
 
     const card = cards.get(id)
+    const previous = previousCards.get(id) || { number: 0 }
     if (!card) {
         return res.status(200).json({ error: "Round not started yet."})
     }
@@ -98,13 +109,25 @@ app.get('/scores/:id', (req, res) => {
     }
 
     const lobbyScores = scores.get(id)
+
     if (!lobbyScores) {
-        const updatedScores = calculateScores(activeCard, lobbyGuesses, [])
+        if (currentCard.number !== previous.number) {
+            const updatedScores = calculateScores(activeCard, lobbyGuesses, [])
+            scores.set(id, updatedScores)
+            previousCards.set(id, currentCard)
+            return res.json(updatedScores)
+        }
+        return res.json(lobbyScores)
+    }
+
+    if (currentCard.number !== previous.number || lobbyScores.length < lobbyGuesses.length) {
+        const updatedScores = calculateScores(activeCard, lobbyGuesses, lobbyScores)
+        scores.set(id, updatedScores)
+        previousCards.set(id, currentCard)
         return res.json(updatedScores)
     }
 
-    const updatedScores = calculateScores(activeCard, lobbyGuesses, lobbyScores)
-    res.json(updatedScores)
+    return res.json(lobbyScores)
 })
 
 // Creates a new lobby
@@ -125,7 +148,7 @@ app.post('/card/:id/:name/:guess', (req, res) => {
     if (!id || !name || !guess) {
         return res.status(400).json({ error: "id or guess parameter missing in the URL."})
     }
-    
+
     const lobbyGuesses = guesses.get(id)
 
     if (!lobbyGuesses) {
