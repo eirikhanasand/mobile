@@ -158,7 +158,7 @@ export default function OverUnder() {
                         <Text style={{ color: theme.textColor }}>{gameModeText}</Text>
                     </TouchableOpacity>}
                     {gameID && <TouchableOpacity 
-                            style={{ position: 'absolute', right: 8 }} 
+                            style={{ position: 'absolute', right: 8, paddingTop: Platform.OS !== "ios" ? 40 : undefined}} 
                             onPress={leave}
                         >
                             <Leave />

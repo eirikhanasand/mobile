@@ -105,7 +105,7 @@ export default function Questions() {
                             {gameID ? ` - ${gameID}` : ''}
                         </Text>
                         {gameID && <TouchableOpacity 
-                            style={{ position: 'absolute', right: 0 }} 
+                            style={{ position: 'absolute', right: 0, paddingTop: Platform.OS !== "ios" ? 40 : undefined }} 
                             onPress={leave}
                         >
                             <Leave />
