@@ -72,7 +72,7 @@ export default function HomeScreen() {
                     {"Bubbles"}
                 </Text>
             </View> 
-            <View style={{display: 'flex',  paddingBottom: 20}}>
+            <View style={{alignItems: 'center', gap: 30}}>
                 <Button 
                     handler={promptGame} 
                     text={lang ? "Bli med i spill" : "Join game"} 

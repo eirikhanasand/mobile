@@ -86,10 +86,12 @@ export default function Guess() {
     }
     
     useEffect(() => {
+        console.log("usefguess")
         async function updateCard() {
             const newCard = await getCard(gameID as string)
 
             if (newCard) {
+                console.log("newcard guess", newCard)
                 setCard(newCard)
             }
         }

@@ -14,8 +14,6 @@ export default function Button({handler, text, backgroundImage}: ButtonProps) {
         <TouchableOpacity
             style={{
                 borderRadius: 175,
-                marginLeft: 30,
-                marginVertical: 15,
                 width: 350,
                 height: 350, 
                 justifyContent: 'center',

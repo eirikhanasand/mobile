@@ -129,6 +129,7 @@ function CardView({status, setStatus}: CardViewProps) {
             const newCard = await getCard(gameID as string)
 
             if (newCard) {
+                console.log("newcard joined", newCard)
                 setCard(newCard)
             }
         }
