@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import getCard, { getScores, postGuess } from '@utils/card'
+import getCard, { getScores, postGuess, setStatus } from '@utils/card'
 import SmallButton from '@components/smallButtons'
 import PlayerList from '@components/playerList'
 import LeaderBoard from '@components/leaderboard'
@@ -19,13 +19,14 @@ import {
     Dimensions, 
     Platform
 } from 'react-native'
+import GuessButtons from '@components/guessButtons'
 
 type ButtonProps = {
     handler: () => void
     text: string
 }
 
-export default function OverUnder() {
+export default function Guess() {
     const { theme } = useSelector((state: ReduxState) => state.theme)
     const { name } = useSelector((state: ReduxState) => state.name)
     const { lang } = useSelector((state: ReduxState) => state.lang)
@@ -37,9 +38,10 @@ export default function OverUnder() {
     const [scores, setScores] = useState<Score[]>([])
     const navigation = useNavigation<NativeStackNavigationProp<any>>()
     const dispatch = useDispatch()
+    const [guess, setGuess] = useState<OneToFourteen>()
     const gameModeText = lang ? '100 Spørsmål' : '100 Questions'
     
-    async function guess(value: 'higher' | 'lower') {
+    async function sendGuess(value: 'higher' | 'lower') {
         const response = await postGuess({ 
             gameID: gameID as string, 
             name, 
@@ -47,12 +49,13 @@ export default function OverUnder() {
         })
         
         if (response) {
-            // successfully guessed whatever...
-            // waiting for other players to guess...
-            console.log(response)
+            
+            if (response.result.includes('Successfully guessed')) {
+                setGuess(card)
+            }
         }
     }
-    
+
     async function startGame() {
         const id = await createLobby()
         
@@ -73,6 +76,13 @@ export default function OverUnder() {
 
     function switchGameMode() {
         navigation.navigate('100q')   
+    }
+
+    function leave() {
+        kick(gameID as string, name)
+        dispatch(setGame(null))
+        setRoundStarted(false)
+        navigation.navigate("index")
     }
     
     useEffect(() => {
@@ -114,11 +124,9 @@ export default function OverUnder() {
         }
     }, [])
 
-    function leave() {
-        kick(gameID as string, name)
-        dispatch(setGame(null))
-        setRoundStarted(false)
-        navigation.navigate("index")
+    async function start() {
+        setStatus(gameID, 'cards')
+        setRoundStarted(true)
     }
 
     return (
@@ -163,8 +171,8 @@ export default function OverUnder() {
                             <PlayerList gameID={gameID} />
                         </View>
                         {gameID && <SmallButton 
-                            handler={() => setRoundStarted(true)} 
-                            text={lang ? "Start" : "Start"} 
+                            handler={start} 
+                            text="Start"
                         />}
                     </>
                 )}
@@ -176,19 +184,15 @@ export default function OverUnder() {
             />}
             <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
                 {!gameID && <GuessButton 
-                    handler={() => gameID ? guess('higher') : next()} 
+                    handler={() => gameID ? sendGuess('higher') : next()} 
                     text={lang ? "Neste" : "Next"} 
                 />}
-                {gameID && roundStarted && <>
-                    <GuessButton 
-                        handler={() => gameID && guess('higher')} 
-                        text="Higher" 
-                    />
-                    <GuessButton 
-                        handler={() => gameID && guess('lower')} 
-                        text="Lower" 
-                    />
-                </>}
+                <GuessButtons 
+                    roundStarted={roundStarted} 
+                    sendGuess={sendGuess} 
+                    card={card}
+                    guess={guess}
+                />
             </View>
         </SafeAreaView>
     )

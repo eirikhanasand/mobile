@@ -25,7 +25,7 @@ export default function Questions() {
     const [showExplanation, setShowExplanation] = useState<boolean>(true)
     const navigation = useNavigation<NativeStackNavigationProp<any>>()
     const dispatch = useDispatch()
-    const gameModeText = lang ? 'Over under' : 'Over under'
+    const gameModeText = lang ? 'Gjett' : 'Guess'
 
     // Start the game when the component mounts
     async function startGame() {
@@ -83,7 +83,7 @@ export default function Questions() {
     }
 
     function switchGameMode() {
-        navigation.navigate('overUnder')
+        navigation.navigate('guess')
     }
 
     // Render the component

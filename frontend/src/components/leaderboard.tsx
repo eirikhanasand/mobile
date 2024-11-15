@@ -21,7 +21,6 @@ export default function LeaderBoard({gameID}: LeaderBoardProps) {
         const response = await getScores(gameID)
 
         if (response) {
-            console.log(response)
             setScores(response)
         }
     }

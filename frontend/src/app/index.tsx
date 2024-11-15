@@ -9,13 +9,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { setName } from '@redux/name'
 import { setGame, setJoined } from '@redux/game'
 import { ScrollView } from 'react-native'
-import { 
-    Alert,
-    Dimensions, 
-    Text, 
-    TouchableOpacity,
-    View 
-} from 'react-native'
+import { Alert, Dimensions, Text, TouchableOpacity, View } from 'react-native'
 
 type PromptProps = {
     id: string | null
@@ -33,10 +27,10 @@ export default function HomeScreen() {
     const [id, setID] = useState<string | null>(null)
     const dispatch = useDispatch()
 
-    const dicePicture = require('../../public/assets/images/dice.jpg')
-    const oneHundredQuestionsPicture = require('../../public/assets/images/100q.jpg')
-    const joinGamePicture = require('../../public/assets/images/joinGame.jpg')
-    const cardsGamePicture = require('../../public/assets/images/cardsGame.jpg')
+    const dicePicture = require('@assets/images/dice.jpg')
+    const oneHundredQuestionsPicture = require('@assets/images/100q.jpg')
+    const joinGamePicture = require('@assets/images/joinGame.jpg')
+    const cardsGamePicture = require('@assets/images/cardsGame.jpg')
 
     // Navigation handler for game 1
     function handle100Q() {
@@ -50,10 +44,10 @@ export default function HomeScreen() {
         navigation.navigate("dice")
     }
 
-    // Navigation handler for Over/Under (playing cards)
+    // Navigation handler for Guess (playing cards)
     function handleCards() {
         dispatch(setGame(null))
-        navigation.navigate("overUnder")
+        navigation.navigate("guess")
     }
 
     function promptGame() {
@@ -96,7 +90,7 @@ export default function HomeScreen() {
                 />   
                 <Button 
                     handler={handleCards} 
-                    text={lang ? "Over/Under" : "Over/Under"} 
+                    text={lang ? "Gjett" : "Guess"} 
                     backgroundImage={cardsGamePicture}
                 /> 
             </View>

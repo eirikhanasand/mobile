@@ -16,7 +16,7 @@ type Lobby = {
     // inlobby = Currently in lobby, waiting for host to start
     // ingame = round in progress
     // waiting = round was just completed, waiting for host to continue
-    status: "inlobby" | "ingame" | "waiting"
+    status: "inlobby" | "ingame" | "waiting" | "cards"
     current?: Question
     questions?: Question[]
 }

@@ -6,15 +6,20 @@ import Cards from "@components/cards"
 import { setGame } from "@redux/game"
 import { getLobby, kick } from "@utils/lobby"
 import { useNavigation } from "expo-router"
-import { useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Dimensions, SafeAreaView, Text, TouchableOpacity, View } from "react-native"
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types"
 import { useDispatch, useSelector } from "react-redux"
-import { GuessButton } from "./overUnder"
+import { GuessButton } from "./guess"
 
 type OneHundredQuestionsProps = {
     text: string
     gameID: string
+}
+
+type CardViewProps = {
+    status: string
+    setStatus: Dispatch<SetStateAction<string>>
 }
 
 export default function Joined() {
@@ -35,7 +40,7 @@ export default function Joined() {
 
         async function fetch() {
             const lobby = await getLobby(gameID)
-            console.log("lobby", lobby)
+
             if ('current' in lobby) {
                 const next = lobby.current
 
@@ -87,24 +92,25 @@ export default function Joined() {
                         <Leave color={theme.titleTextColor} />
                     </TouchableOpacity>
                 </View>
-                <OneHundredQuestions text={text} gameID={gameID} />
-                <Status text={status} />
-                <CardView status={status} />
+                {status !== 'cards' && <OneHundredQuestions text={text} gameID={gameID} />}
+                {status !== 'cards' && <Status text={status} />}
+                <CardView status={status} setStatus={setStatus} />
             </View>
         </SafeAreaView>
     )
 }
 
-function CardView({status}: {status: string}) {
+function CardView({status, setStatus}: CardViewProps) {
     const { gameID } = useSelector((state: ReduxState) => state.game)
     const { lang } = useSelector((state: ReduxState) => state.lang)
     const { name } = useSelector((state: ReduxState) => state.name)
     const [card, setCard] = useState<OneToFourteen>()
     const [scores, setScores] = useState<Score[]>()
     const [randomType, setRandomType] = useState<CardType>('hearts')
+    const [guess, setGuess] = useState<OneToFourteen>()
     const roundStarted = status === 'cards'
 
-    async function guess(value: 'higher' | 'lower') {
+    async function sendGuess(value: 'higher' | 'lower') {
         const response = await postGuess({ 
             gameID: gameID as string, 
             name, 
@@ -112,9 +118,9 @@ function CardView({status}: {status: string}) {
         })
         
         if (response) {
-            // successfully guessed whatever...
-            // waiting for other players to guess...
-            console.log(response)
+            if (response.result.includes('Successfully guessed')) {
+                setGuess(card)
+            }
         }
     }
 
@@ -135,6 +141,14 @@ function CardView({status}: {status: string}) {
             }
         }
 
+        async function fetchLobby() {
+            const lobby = await getLobby(gameID)
+
+            if (lobby) {
+                setStatus(lobby.status)
+            }
+        }
+
         setInterval(async() => {
             if (gameID) {
                 // Updates card
@@ -142,6 +156,9 @@ function CardView({status}: {status: string}) {
     
                 // Updates scores
                 await updateScores()
+
+                // Fetches lobby
+                await fetchLobby()
             }
         }, 2000)
     }, [])
@@ -156,11 +173,11 @@ function CardView({status}: {status: string}) {
             <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
                 {gameID && roundStarted && <>
                     <GuessButton 
-                        handler={() => gameID && guess('higher')} 
+                        handler={() => gameID && sendGuess('higher')} 
                         text={lang ? 'Høyere' : 'Higher'} 
                     />
                     <GuessButton 
-                        handler={() => gameID && guess('lower')} 
+                        handler={() => gameID && sendGuess('lower')} 
                         text={lang ? 'Lavere' : 'Lower'}
                     />
                 </>}
@@ -172,7 +189,7 @@ function CardView({status}: {status: string}) {
 function Status({text}: {text: string}) {
     const { theme } = useSelector((state: ReduxState) => state.theme)
     const { lang } = useSelector((state: ReduxState) => state.lang)
-    const textToDisplay = text === 'pending' 
+    const textToDisplay = text === 'pending' || text === 'inlobby'
         ? lang ? 'Venter på at verten skal starte...' : 'Waiting for host to start...'
         : lang ? 'Ukjent' : 'Unknown'
 

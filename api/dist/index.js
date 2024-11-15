@@ -9,7 +9,6 @@ let questions = Questions;
 let lobbies = new Map();
 let askedQuestions = new Map();
 let cards = new Map();
-let previousCards = new Map();
 let scores = new Map();
 let guesses = new Map();
 // General error message
@@ -35,6 +34,26 @@ app.get('/lobby/:id', (req, res) => {
         current,
         questions: game.questions
     });
+});
+app.get('/status/:id/:status', (req, res) => {
+    const { id, status } = req.params;
+    const lobby = lobbies.get(id);
+    const valid = ["inlobby", "ingame", "waiting", "cards"];
+    if (!valid.includes(status)) {
+        res.json({ result: `Failure, invalid status "${status}" not in ${valid.join()}.` });
+    }
+    if (!lobby) {
+        lobbies.set(id, {
+            players: [],
+            status: 'cards',
+            current: undefined,
+            questions: undefined
+        });
+    }
+    else {
+        lobbies.set(id, Object.assign(Object.assign({}, lobby), { status: status }));
+    }
+    res.json({ result: "success" });
 });
 app.get('/card/:id', (req, res) => {
     const { id } = req.params;
@@ -67,38 +86,38 @@ app.get('/scores/:id', (req, res) => {
     }
     const lobbyGuesses = guesses.get(id);
     if (!lobbyGuesses) {
-        return res.status(200).json({ error: "No guesses yet." });
+        return res.status(503).json({ error: "No guesses yet." });
     }
     const card = cards.get(id);
-    const previous = previousCards.get(id) || { number: 0 };
     if (!card) {
-        return res.status(200).json({ error: "Round not started yet." });
+        return res.status(503).json({ error: "Waiting for round to start." });
+    }
+    if (card.length < 2) {
+        updateCard({ id, card });
+        return res.status(503).json({ error: "Waiting for next card." });
     }
     const currentCard = card[card.length - 1];
+    const previousCard = card[card.length - 2];
     let activeCard = card;
-    if (new Date().getTime() - new Date(currentCard.time).getTime() > 30000) {
-        let number = currentCard.number;
-        let newNumber = Math.floor(Math.random() * 12) + 2;
-        while (number === newNumber) {
-            newNumber = Math.floor(Math.random() * 12) + 2;
-        }
-        activeCard = [...card, { number: newNumber, time: new Date().getTime() }];
-        cards.set(id, activeCard);
-    }
     const lobbyScores = scores.get(id);
     if (!lobbyScores) {
-        if (currentCard.number !== previous.number) {
+        updateCard({ id, card });
+        if (currentCard.number !== previousCard.number) {
             const updatedScores = calculateScores(activeCard, lobbyGuesses, []);
-            scores.set(id, updatedScores);
-            previousCards.set(id, currentCard);
+            if (new Date().getTime() - new Date(previousCard.time).getTime() > 30000) {
+                scores.set(id, updatedScores);
+                guesses.set(id, []);
+            }
             return res.json(updatedScores);
         }
         return res.json(lobbyScores);
     }
-    if (currentCard.number !== previous.number || lobbyScores.length < lobbyGuesses.length) {
-        const updatedScores = calculateScores(activeCard, lobbyGuesses, lobbyScores);
+    if (currentCard.number !== previousCard.number && (new Date().getTime() - new Date(currentCard.time).getTime() > 30000)) {
+        updateCard({ id, card });
+        const newCard = cards.get(id);
+        const updatedScores = calculateScores(newCard, lobbyGuesses, lobbyScores);
         scores.set(id, updatedScores);
-        previousCards.set(id, currentCard);
+        guesses.set(id, []);
         return res.json(updatedScores);
     }
     return res.json(lobbyScores);
@@ -120,11 +139,11 @@ app.post('/card/:id/:name/:guess', (req, res) => {
     }
     const lobbyGuesses = guesses.get(id);
     if (!lobbyGuesses) {
-        const value = Boolean(guess) || -1;
-        if (typeof value === 'boolean' && value !== true && value !== 1) {
-            res.status(400).json({ error: "You must guess either 0 (down) or 1 (up)" });
+        const value = guess === "1" || guess === "0";
+        if (!value) {
+            return res.status(400).json({ error: "You must guess either 0 (down) or 1 (up)" });
         }
-        guesses.set(id, [{ name, value: Boolean(guess) }]);
+        guesses.set(id, [{ name, value: guess === "1" ? true : false }]);
         return res.status(200).json({ "result": `Successfully guessed ${guess === '1' ? 'up' : 'down'}.` });
     }
     const existingGuesses = Object.values(lobbyGuesses);
@@ -133,7 +152,7 @@ app.post('/card/:id/:name/:guess', (req, res) => {
             return res.status(409).json({ "result": `You have already guessed ${existingGuess.value === true ? 'up' : 'down'}.` });
         }
     }
-    lobbyGuesses.push({ name, value: Boolean(guess) });
+    lobbyGuesses.push({ name, value: guess === "1" ? true : false });
     return res.status(200).json({ "result": `Successfully guessed ${guess === '1' ? 'up' : 'down'}` });
 });
 // Joins a new lobby
@@ -291,19 +310,23 @@ function replacePlaceholders(question, players) {
 function calculateScores(card, guesses, scores) {
     const length = card.length;
     const previousCardNumber = length > 1 ? card[length - 2].number : undefined;
+    const currentCard = card[length - 1].number;
     if (!previousCardNumber) {
         for (const guess of guesses) {
             scores = defineUserScore(scores, guess.name);
         }
         return scores;
     }
-    const higher = previousCardNumber < card[length - 1].number;
+    const higher = previousCardNumber < currentCard;
     for (const guess of guesses) {
         if (higher && guess.value) {
             scores = updateUser(scores, guess.name);
         }
         else if (!higher && !guess.value) {
             scores = updateUser(scores, guess.name);
+        }
+        else {
+            defineUserScore(scores, guess.name);
         }
     }
     return scores;
@@ -326,4 +349,15 @@ function defineUserScore(scores, name) {
     }
     scores.push({ name, score: 0 });
     return scores;
+}
+function updateCard({ id, card }) {
+    const currentCard = card[card.length - 1];
+    if (new Date().getTime() - new Date(currentCard.time).getTime() > 30000) {
+        let number = currentCard.number;
+        let newNumber = Math.floor(Math.random() * 12) + 2;
+        while (number === newNumber) {
+            newNumber = Math.floor(Math.random() * 12) + 2;
+        }
+        cards.set(id, [...card, { number: newNumber, time: new Date().getTime() }]);
+    }
 }

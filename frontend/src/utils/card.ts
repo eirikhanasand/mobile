@@ -55,3 +55,20 @@ export async function postGuess({ gameID, name, guess}: PostGuessProps) {
         console.error(`Failed to fetch: ${error}`)
     }
 }
+
+
+// Fetches the current card for a specific game
+export async function setStatus(gameID: string, status: string) {
+    try {
+        const response = await fetch(`${API}/status/${gameID}/${status}`)
+
+        if (!response.ok) {
+            throw new Error(await response.text())
+        }
+
+        const data = await response.json()
+        return data
+    } catch (error) {
+        console.error(`Failed to fetch: ${error}`)
+    }
+}
