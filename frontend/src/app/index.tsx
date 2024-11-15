@@ -1,9 +1,14 @@
 import Button from '@components/button'
+import Field from '@components/field'
+import SmallButton from '@components/smallButtons'
 import { joinLobby } from '@utils/lobby'
 import { useNavigation } from 'expo-router'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types'
 import { useDispatch, useSelector } from "react-redux"
+import { setName } from '@redux/name'
+import { setGame, setJoined } from '@redux/game'
+import { ScrollView } from 'react-native'
 import { 
     Alert,
     Dimensions, 
@@ -11,11 +16,6 @@ import {
     TouchableOpacity,
     View 
 } from 'react-native'
-import { setName } from '@redux/name'
-import Field from '@components/field'
-import { setGame, setJoined } from '@redux/game'
-import { ScrollView } from 'react-native'
-import SmallButton from '@components/smallButtons'
 
 type PromptProps = {
     id: string | null

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux"
 type ButtonProps = {
     handler: () => void
     text: string
-    backgroundImage?: any;      // Optional background image
+    backgroundImage?: any
 }
 
 export default function Button({handler, text, backgroundImage}: ButtonProps) {

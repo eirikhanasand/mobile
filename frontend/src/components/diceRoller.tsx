@@ -1,5 +1,5 @@
-import { DiceGIF } from '@constants'
 import React, { useEffect, useState } from 'react'
+import { DiceGIF } from '@constants'
 import { Image, View, TouchableOpacity } from 'react-native'
 
 type DiceRollerProps = {

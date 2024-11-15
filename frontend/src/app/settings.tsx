@@ -1,11 +1,11 @@
+import SmallButton from '@components/smallButtons'
+import Field from '@components/field'
 import { Dimensions, SafeAreaView, Text, View, ScrollView, Platform } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import { changeLang } from '../redux/lang'
 import { changeTheme } from '../redux/theme'
-import Field from '@components/field'
 import { setName } from '@redux/name'
 import { useEffect, useState } from 'react'
-import SmallButton from '@components/smallButtons'
 import { toggleMusic } from '@redux/music'
 import { Audio } from 'expo-av'
 

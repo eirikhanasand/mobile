@@ -45,7 +45,7 @@ export default function PlayerList({gameID}: PlayerListProps) {
                 fontWeight: 'bold'
             }}>{lang ? "Leder" : "Leader"}</Text>
             <View>
-                <Text style={{color: 'white', fontSize: 18}}>{leader}</Text>
+                <Text style={{color: theme.textColor, fontSize: 18}}>{leader}</Text>
             </View>
             {players.length > 1 && <>
                 <Text style={{
@@ -65,9 +65,9 @@ export default function PlayerList({gameID}: PlayerListProps) {
                                 justifyContent: 'space-between'
                             }}
                         >
-                            <Text style={{color: 'white', fontSize: 18}}>{player}</Text>
+                            <Text style={{color: theme.textColor, fontSize: 18}}>{player}</Text>
                             {players[0] === name && <TouchableOpacity onPress={() => kick(gameID || '', player)}>
-                                <Text style={{color: 'white', fontSize: 18}}>❌</Text>
+                                <Text style={{color: theme.textColor, fontSize: 18}}>❌</Text>
                             </TouchableOpacity>}
                         </View>
                     ))}

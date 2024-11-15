@@ -1,31 +1,23 @@
-import { Link, Stack } from 'expo-router'
-import { StyleSheet } from 'react-native'
-import { ThemedText } from '@components/ThemedText'
-import { ThemedView } from '@components/ThemedView'
+import { Stack } from 'expo-router'
+import { Text, View } from 'react-native'
+import { useSelector } from 'react-redux'
 
 export default function NotFoundScreen() {
+    const { lang } = useSelector((state: ReduxState) => state.lang)
+
     return (
         <>
-            <Stack.Screen options={{ title: 'Oops!' }} />
-            <ThemedView style={styles.container}>
-                <ThemedText type="title">This screen doesn't exist.</ThemedText>
-                <Link href="/" style={styles.link}>
-                    <ThemedText type="link">Go to home screen!</ThemedText>
-                </Link>
-            </ThemedView>
+            <Stack.Screen options={{ title: lang ? 'Oi!' : 'Oops!' }} />
+            <View style={{
+                justifyContent: 'center', 
+                alignItems: 'center', 
+                width: '100%', 
+                height: '100%'
+            }}>
+                <Text style={{fontWeight: 600, fontSize: 30}}>
+                    {lang ? 'Denne skjermen finnes ikke' : 'This screen does not exist'}
+                </Text>
+            </View>
         </>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20,
-    },
-    link: {
-        marginTop: 15,
-        paddingVertical: 15,
-    },
-})

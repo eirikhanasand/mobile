@@ -1,15 +1,15 @@
 import PlayerList from '@components/playerList'
+import FilterButtons from '@components/filterButtons'
+import Rules from '@components/rules'
+import Leave from '@components/leave'
+import SmallButton from '@components/smallButtons'
 import { createLobby, joinLobby, kick, resetQuestions } from '@utils/lobby'
 import { useState } from 'react'
 import { Dimensions, Platform, SafeAreaView, Text, TouchableOpacity, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import FilterButtons from '@components/filterButtons'
-import Rules from '@components/rules'
 import { nextQuestion as nextQuestionAPI } from "@utils/lobby"
-import Leave from '@components/leave'
 import { useNavigation } from 'expo-router'
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types'
-import SmallButton from '@components/smallButtons'
 import { setGame } from '@redux/game'
 
 export default function Questions() {

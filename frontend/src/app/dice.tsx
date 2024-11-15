@@ -1,7 +1,7 @@
+import DiceRoller from '@components/diceRoller'
 import { useState } from 'react'
 import { Dimensions, Platform, SafeAreaView, Text, View } from 'react-native'
 import { useSelector } from 'react-redux'
-import DiceRoller from '@components/diceRoller'
 
 export default function Dice() {
     const { lang } = useSelector((state: ReduxState) => state.lang)

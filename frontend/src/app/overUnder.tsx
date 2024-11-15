@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import Card, { getRandomCard } from '@components/card'
-import { useDispatch, useSelector } from "react-redux"
-import { SvgXml } from 'react-native-svg'
-import Backside from '@assets/images/backside.svg'
 import getCard, { getScores, postGuess } from '@utils/card'
 import SmallButton from '@components/smallButtons'
+import PlayerList from '@components/playerList'
+import LeaderBoard from '@components/leaderboard'
+import Leave from '@components/leave'
+import Cards from '@components/cards'
+import { getRandomCard } from '@components/card'
+import { useDispatch, useSelector } from "react-redux"
 import { createLobby, joinLobby, kick } from '@utils/lobby'
+import { setGame } from '@redux/game'
+import { useNavigation } from 'expo-router'
+import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types'
 import { 
     SafeAreaView, 
     Text, 
@@ -14,26 +19,10 @@ import {
     Dimensions, 
     Platform
 } from 'react-native'
-import PlayerList from '@components/playerList'
-import LeaderBoard from '@components/leaderboard'
-import { setGame } from '@redux/game'
-import { useNavigation } from 'expo-router'
-import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types'
-import Leave from '@components/leave'
 
 type ButtonProps = {
     handler: () => void
     text: string
-}
-
-type Score = {
-    name: string
-    score: number
-}
-
-type CardsProps = {
-    card: OneToFourteen
-    randomType: CardType
 }
 
 export default function OverUnder() {
@@ -137,7 +126,7 @@ export default function OverUnder() {
             <View>
                 <View style={{flexDirection: 'row', justifyContent: 'space-around', paddingTop: Platform.OS !== "ios" ? 40 : undefined}}>
                     <Text style={{
-                        fontSize: 30,
+                        fontSize: gameID ? 25 : 30,
                         fontWeight: 'bold',
                         textAlign: 'center',
                         color: theme.titleTextColor
@@ -181,21 +170,21 @@ export default function OverUnder() {
                 )}
             </View>
             {gameID && roundStarted && <LeaderBoard gameID={gameID} />}
-            {card && (roundStarted || !gameID) && <Cards 
+            {card && (roundStarted || !gameID) && <Cards
                 card={card} 
                 randomType={randomType} 
             />}
             <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                {!gameID && <Button 
+                {!gameID && <GuessButton 
                     handler={() => gameID ? guess('higher') : next()} 
                     text={lang ? "Neste" : "Next"} 
                 />}
                 {gameID && roundStarted && <>
-                    <Button 
+                    <GuessButton 
                         handler={() => gameID && guess('higher')} 
                         text="Higher" 
                     />
-                    <Button 
+                    <GuessButton 
                         handler={() => gameID && guess('lower')} 
                         text="Lower" 
                     />
@@ -205,7 +194,7 @@ export default function OverUnder() {
     )
 }
 
-function Button({handler, text}: ButtonProps) {
+export function GuessButton({handler, text}: ButtonProps) {
     const { theme } = useSelector((state: ReduxState) => state.theme)
 
     return (
@@ -226,44 +215,5 @@ function Button({handler, text}: ButtonProps) {
                 {text}
             </Text>
         </TouchableOpacity>
-    )
-}
-
-function Cards({card, randomType}: CardsProps) {
-    return (
-        <View style={{
-            flexDirection: 'row',
-            justifyContent: 'space-around',
-            marginBottom: 20,
-        }}>
-            <View style={{
-                minWidth: 150,
-                height: 250,
-                maxHeight: 250,
-                borderRadius: 10,
-            }}>
-                <SvgXml 
-                    xml={Backside} 
-                    style={{maxWidth: 150, maxHeight: 250}} 
-                />
-            </View>
-
-            {card && <View style={{
-                width: 150,
-                height: 250,
-                borderRadius: 10,
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}>
-                <Card 
-                    number={card} 
-                    type={randomType}
-                    style={{ 
-                        height: 250, minHeight: 250, maxHeight: 250,
-                        width: 150, minWidth: 150, maxWidth: 150 
-                    }} 
-                />
-            </View>}
-        </View>
     )
 }

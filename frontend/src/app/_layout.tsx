@@ -1,8 +1,8 @@
-import { Tabs } from 'expo-router'
 import React from 'react'
+import Wrapper from '../components/wrapper'
+import { Tabs } from 'expo-router'
 import { TabBarIcon } from '../components/navigation/TabBarIcon'
 import { useSelector } from 'react-redux'
-import Wrapper from '../components/wrapper'
 import { StatusBar } from 'expo-status-bar'
 import { View } from 'react-native'
 
