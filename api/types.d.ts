@@ -33,6 +33,7 @@ type Score = {
 
 type Card = {
     number: number
+    type: CardType
     time: number
 }
 
@@ -40,3 +41,6 @@ type Guess = {
     name: string
     value: boolean
 }
+
+type CardType = 'hearts' | 'spades' | 'clubs' | 'diamonds'
+

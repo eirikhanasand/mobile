@@ -173,9 +173,6 @@ export function getRandomCard(): RandomCardProps {
     // 'Lookup table' for number -> type
     const numberToType = ['hearts', 'spades', 'clubs', 'diamonds']
 
-    // Stores the type to be displayed
-    const Type = randomType
-
     // Returns the card and info
-    return { type: numberToType[Type] as CardType, number: randomNumber }
+    return { type: numberToType[randomType] as CardType, number: randomNumber }
 }

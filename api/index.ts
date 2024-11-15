@@ -23,6 +23,9 @@ let cards: Map<string, Card[]> = new Map()
 let scores: Map<string, Score[]> = new Map()
 let guesses: Map<string, Guess[]> = new Map()
 
+// 'Lookup table' for number -> type
+const numberToType = ['hearts', 'spades', 'clubs', 'diamonds']
+
 // General error message
 app.get('/', (_, res) => {
     res.json({error: "Invalid endpoint. Please use /games for an overview of existing games."})
@@ -86,9 +89,11 @@ app.get('/card/:id', (req, res) => {
     // Creates a new card if there is no card for the current lobby
     if (!card) {
         const number = Math.floor(Math.random() * 12) + 2
-        cards.set(id, [{ number, time: new Date().getTime() }])
+        const randomType = Math.floor((Math.random() * 100) % 4)
+        const newCard = { number, type: numberToType[randomType] as any, time: new Date().getTime() }
+        cards.set(id, [newCard])
 
-        return res.json({ card: number })
+        return res.json({ ...newCard })
     }
 
     const currentCard = card[card.length - 1]
@@ -102,11 +107,13 @@ app.get('/card/:id', (req, res) => {
             newNumber = Math.floor(Math.random() * 12) + 2
         }
 
-        cards.set(id, [...card, { number: newNumber, time: new Date().getTime() }])
-        return res.json({ card: number })
+        const randomType = Math.floor((Math.random() * 100) % 4)
+        const newCard = { number: newNumber, type: numberToType[randomType] as any, time: new Date().getTime() }
+        cards.set(id, [...card, newCard])
+        return res.json({ ...newCard })
     }
 
-    return res.json({ card: currentCard.number })
+    return res.json({ ...currentCard })
 })
 
 // Fetches the scores for a given lobby
@@ -469,6 +476,7 @@ function updateCard({id, card}: UpdateCardProps) {
             newNumber = Math.floor(Math.random() * 12) + 2
         }
         
-        cards.set(id, [...card, { number: newNumber, time: new Date().getTime() }])
+        const randomType = Math.floor((Math.random() * 100) % 4)
+        cards.set(id, [...card, { number: newNumber, type: numberToType[randomType] as any, time: new Date().getTime() }])
     }
 }

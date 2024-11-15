@@ -113,7 +113,7 @@ export default function Guess() {
                 await updateScores()
             }
         }, 2000)
-    }, [])
+    }, [gameID])
 
     useEffect(() => {
         if (!gameID) {
@@ -121,10 +121,11 @@ export default function Guess() {
 
             if (random) {
                 setRandomType(random.type)
+                console.log("random", random)
                 setCard(random.number)
             }
         }
-    }, [])
+    }, [gameID])
 
     async function start() {
         setStatus(gameID, 'cards')

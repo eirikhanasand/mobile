@@ -1,16 +1,21 @@
+// Imports express, parser and questions
 import express from "express";
 import bodyParser from "body-parser";
 import Questions from "./questions.js";
+// Starts the application
 const app = express();
 const port = 3000;
 const MAX_PLAYERS = 30;
 app.use(bodyParser.json());
+// Defines global objects that are available
 let questions = Questions;
 let lobbies = new Map();
 let askedQuestions = new Map();
 let cards = new Map();
 let scores = new Map();
 let guesses = new Map();
+// 'Lookup table' for number -> type
+const numberToType = ['hearts', 'spades', 'clubs', 'diamonds'];
 // General error message
 app.get('/', (_, res) => {
     res.json({ error: "Invalid endpoint. Please use /games for an overview of existing games." });
@@ -35,6 +40,7 @@ app.get('/lobby/:id', (req, res) => {
         questions: game.questions
     });
 });
+// Sets the status of the lobby
 app.get('/status/:id/:status', (req, res) => {
     const { id, status } = req.params;
     const lobby = lobbies.get(id);
@@ -55,6 +61,7 @@ app.get('/status/:id/:status', (req, res) => {
     }
     res.json({ result: "success" });
 });
+// Fetches the card for a given lobby
 app.get('/card/:id', (req, res) => {
     const { id } = req.params;
     if (!id)
@@ -63,8 +70,10 @@ app.get('/card/:id', (req, res) => {
     // Creates a new card if there is no card for the current lobby
     if (!card) {
         const number = Math.floor(Math.random() * 12) + 2;
-        cards.set(id, [{ number, time: new Date().getTime() }]);
-        return res.json({ card: number });
+        const randomType = Math.floor((Math.random() * 100) % 4);
+        const newCard = { number, type: numberToType[randomType], time: new Date().getTime() };
+        cards.set(id, [newCard]);
+        return res.json(Object.assign({}, newCard));
     }
     const currentCard = card[card.length - 1];
     // Creates a new card if the existing card is older than 30 seconds
@@ -74,11 +83,14 @@ app.get('/card/:id', (req, res) => {
         while (number === newNumber) {
             newNumber = Math.floor(Math.random() * 12) + 2;
         }
-        cards.set(id, [...card, { number: newNumber, time: new Date().getTime() }]);
-        return res.json({ card: number });
+        const randomType = Math.floor((Math.random() * 100) % 4);
+        const newCard = { number: newNumber, type: numberToType[randomType], time: new Date().getTime() };
+        cards.set(id, [...card, newCard]);
+        return res.json(Object.assign({}, newCard));
     }
-    return res.json({ card: currentCard.number });
+    return res.json(Object.assign({}, currentCard));
 });
+// Fetches the scores for a given lobby
 app.get('/scores/:id', (req, res) => {
     const { id } = req.params;
     if (!id) {
@@ -132,6 +144,7 @@ app.post('/lobby', (_, res) => {
     lobbies.set(id, { status: "inlobby", players: [] });
     res.json(id);
 });
+// Posts a guess for the next card in the specificed lobby
 app.post('/card/:id/:name/:guess', (req, res) => {
     const { id, name, guess } = req.params;
     if (!id || !name || !guess) {
@@ -301,12 +314,14 @@ function checkBody(req, res) {
     }
     return id;
 }
+// Replacec {player} with the actual player name
 function replacePlaceholders(question, players) {
     return question.replace(/{player}/g, () => {
         const randomIndex = Math.floor(Math.random() * players.length);
         return players[randomIndex];
     });
 }
+// Calculates new scores based on given guesses
 function calculateScores(card, guesses, scores) {
     const length = card.length;
     const previousCardNumber = length > 1 ? card[length - 2].number : undefined;
@@ -331,6 +346,7 @@ function calculateScores(card, guesses, scores) {
     }
     return scores;
 }
+// Updates a users score
 function updateUser(scores, name) {
     for (let i = 0; i < scores.length; i++) {
         if (scores[i].name === name) {
@@ -341,6 +357,7 @@ function updateUser(scores, name) {
     scores.push({ name, score: 10 });
     return scores;
 }
+// Defines a users score
 function defineUserScore(scores, name) {
     for (let i = 0; i < scores.length; i++) {
         if (scores[i].name === name) {
@@ -350,6 +367,7 @@ function defineUserScore(scores, name) {
     scores.push({ name, score: 0 });
     return scores;
 }
+// Updates the card
 function updateCard({ id, card }) {
     const currentCard = card[card.length - 1];
     if (new Date().getTime() - new Date(currentCard.time).getTime() > 30000) {
@@ -358,6 +376,7 @@ function updateCard({ id, card }) {
         while (number === newNumber) {
             newNumber = Math.floor(Math.random() * 12) + 2;
         }
-        cards.set(id, [...card, { number: newNumber, time: new Date().getTime() }]);
+        const randomType = Math.floor((Math.random() * 100) % 4);
+        cards.set(id, [...card, { number: newNumber, type: numberToType[randomType], time: new Date().getTime() }]);
     }
 }
