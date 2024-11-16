@@ -1,6 +1,5 @@
 import PlayerList from '@components/playerList'
 import FilterButtons from '@components/filterButtons'
-import Rules from '@components/rules'
 import Leave from '@components/leave'
 import SmallButton from '@components/smallButtons'
 import { createLobby, joinLobby, kick, resetQuestions } from '@utils/lobby'
@@ -42,6 +41,7 @@ export default function Questions() {
     // Start a new round with a random question
     async function startRound() {
         setRoundStarted(true)
+        setStatus(gameID, 'ingame')
         const next = await nextQuestionAPI(gameID as string)
 
         if (next) {
@@ -70,6 +70,7 @@ export default function Questions() {
         setAskedQuestions([])
         setRoundStarted(false)
         setFinished(false)
+        setStatus(gameID, 'inlobby')
 
         if (gameID) {
             resetQuestions(gameID)
@@ -84,7 +85,8 @@ export default function Questions() {
     }
 
     function switchGameMode() {
-        setStatus(gameID, 'cards')
+        setStatus(gameID, 'inlobby')
+        setRoundStarted(false)
         navigation.navigate('guess')
     }
 
@@ -130,7 +132,6 @@ export default function Questions() {
                             <Text style={{ color: theme.textColor }}>{gameModeText}</Text>
                         </TouchableOpacity>
                     </View>
-                <Rules show={showExplanation} />
                 {!roundStarted && (
                     <>
                         {!gameID && <SmallButton handler={startGame} text={lang ? "Lag en lobby" : "Create a lobby"} />}

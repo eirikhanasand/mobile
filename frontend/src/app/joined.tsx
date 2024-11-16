@@ -65,7 +65,7 @@ export default function Joined() {
         setQuestion({} as Question)
         navigation.navigate("index")
     }
-    
+
     return (
         <SafeAreaView style={{ backgroundColor: theme.background, height }}>
             <View style={{ 
@@ -92,7 +92,7 @@ export default function Joined() {
                         <Leave color={theme.titleTextColor} />
                     </TouchableOpacity>
                 </View>
-                {status !== 'cards' && <OneHundredQuestions text={text} gameID={gameID} />}
+                {status === 'ingame' && <OneHundredQuestions text={text} gameID={gameID} />}
                 {status !== 'cards' && status !== 'ingame' && <Status text={status} />}
                 <CardView status={status} setStatus={setStatus} />
             </View>

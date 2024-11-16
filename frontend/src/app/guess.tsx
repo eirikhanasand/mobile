@@ -83,7 +83,8 @@ export default function Guess() {
     }
 
     function switchGameMode() {
-        setStatus(gameID, 'ingame')
+        setStatus(gameID, 'inlobby')
+        setRoundStarted(false)
         navigation.navigate('100q') 
     }
 
