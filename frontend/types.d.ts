@@ -19,6 +19,7 @@ type ReduxState = {
         gameID: string
         joined: boolean
         players: string[]
+        filters: string[]
     }
     music: {
         playing: boolean

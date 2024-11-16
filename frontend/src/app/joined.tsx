@@ -11,6 +11,7 @@ import { Dimensions, SafeAreaView, Text, TouchableOpacity, View } from "react-na
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types"
 import { useDispatch, useSelector } from "react-redux"
 import { GuessButtons } from "./guess"
+import PostQuestion from "@components/postQuestion"
 
 type OneHundredQuestionsProps = {
     text: string
@@ -93,6 +94,7 @@ export default function Joined() {
                     </TouchableOpacity>
                 </View>
                 {status === 'ingame' && <OneHundredQuestions text={text} gameID={gameID} />}
+                {status === 'ingame' && <PostQuestion />}
                 {status !== 'cards' && status !== 'ingame' && <Status text={status} />}
                 <CardView status={status} setStatus={setStatus} />
             </View>

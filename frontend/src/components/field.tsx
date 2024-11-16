@@ -47,7 +47,7 @@ export default function Field({title, placeholder, autoFocus, text, setText}: Na
                 }}
                 value={getText()}
                 placeholder={placeholder}
-                placeholderTextColor={theme.titleTextColor}
+                placeholderTextColor={theme.textColor}
                 textAlign="center"
                 onChangeText={(val) => setText(val)}
                 autoFocus={autoFocus}

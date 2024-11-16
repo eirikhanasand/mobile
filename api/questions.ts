@@ -1,7 +1,7 @@
 const Questions = [
     // Categories: either Kind or Bold, and either NTNU or default not NTNU 
     {
-        title_no: "{player}, hvis du kunne dratt hvor som helst i verden, hvor ville du dratt of hvorfor?",
+        title_no: "{player}, hvis du kunne dratt hvor som helst i verden, hvor ville du dratt og hvorfor?",
         title_en: "{player}, if you could travel anywhere in the world, where would you go and why?",
         categories: ["Kind"],
     },
@@ -16,7 +16,7 @@ const Questions = [
         categories: ["Kind"],
     },
     {
-        title_no: "Hvem kommer alltid for seint til forelesninger?",
+        title_no: "Hvem kommer alltid for sent til forelesninger?",
         title_en: "Who is always late for lectures?",
         categories: ["NTNU", "Kind"],
     },
@@ -42,7 +42,7 @@ const Questions = [
     },
     {
         title_no: "{player}, hva er det du angrer mest på?",
-        title_en: "{player}, what is your biggest regret?",
+        title_en: "{player}, what is your largest regret?",
         categories: ["Bold"],
     },
     {
@@ -51,13 +51,13 @@ const Questions = [
         categories: ["NTNU", "Kind"],
     },
     {
-        title_no: "Hvem er mest sannsynlig til å glemme en viktig eksamen?",
-        title_en: "Who is most likely to forget an important exam?",
+        title_no: "Hvem er mest sannsynlig til å glemme en eksamen?",
+        title_en: "Who is most likely to forget an exam?",
         categories: ["NTNU", "Kind"]
     },
     {
-        title_no: "{player}, hvis du kunne ha en superkraft, hva ville det vært?",
-        title_en: "{player}, if you could have one superpower, what would it be?",
+        title_no: "{player}, hvis du kunne hatt en superkraft, hvilken ville det vært?",
+        title_en: "{player}, if you could have a superpower, which would it be?",
         categories: ["Kind"]
     },
     {

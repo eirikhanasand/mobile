@@ -218,6 +218,28 @@ app.post('/card/:id/:name/:guess', (req, res) => {
     return res.status(200).json({ "result": `Successfully guessed ${guess === '1' ? 'up' : 'down'}`})
 })
 
+// Posts a custom question
+app.post('/question/:id', (req, res) => {
+    const { id } = req.params
+    const { title_no, title_en, categories } = req.body
+
+    if (!id || !title_no || !title_en || !categories) {
+        return res.status(400).json("Missing ID, title_no, title_en or categories.")
+    }
+
+    const lobby = lobbies.get(id)
+    if (!lobby) {
+        return res.status(400).json("Lobby doesnt exist")
+    }
+
+    lobbies.set(id, {...lobby, questions: Array.isArray(lobby.questions) 
+        ? [...lobby.questions, {title_no, title_en, categories}] 
+        : [{title_no, title_en, categories}]}
+    )
+
+    return res.status(200).json({ "result": "Added question"})
+})
+
 // Joins a new lobby
 app.put('/lobby', (req, res) => {
     const id = checkBody(req, res)
@@ -244,6 +266,7 @@ app.put('/lobby', (req, res) => {
 // Goes to the next question
 app.put('/game/:id', (req, res) => {
     const { id } = req.params
+    const { filters, reverse } = req.body
 
     if (!lobbies.has(id)) {
         return res.status(404).json({
@@ -252,7 +275,7 @@ app.put('/game/:id', (req, res) => {
     }
 
     const lobby = lobbies.get(id) as Lobby
-    const { question, asked, randomID } = getQuestion(lobby, id)
+    const { question, asked, randomID } = getQuestion(lobby, id, filters, reverse)
 
     if (question) {
         const title_no = replacePlaceholders(question.title_no, lobby.players)
@@ -264,7 +287,11 @@ app.put('/game/:id', (req, res) => {
             categories: question.categories
         }
 
-        askedQuestions.set(id, [...asked, randomID])
+        // Skips custom questions since these are deleted upon usage
+        if (!lobby.questions?.length) {
+            askedQuestions.set(id, [...asked, randomID])
+        }
+
         const updatedLobby = {...lobby, current}
         lobbies.set(id.toUpperCase(), updatedLobby)
     
@@ -275,7 +302,7 @@ app.put('/game/:id', (req, res) => {
         })
     } else {
         askedQuestions.delete(id)
-        const { question } = getQuestion(lobby, id)
+        const { question } = getQuestion(lobby, id, filters, reverse)
 
         res.status(201).json({
             players: lobby.players,
@@ -311,6 +338,7 @@ app.put('/kick', (req, res) => {
 // Resets game
 app.delete('/game/:id', (req, res) => {
     const { id } = req.params
+    const { filter, reverse } = req.body
 
     if (!lobbies.has(id)) {
         return res.status(404).json({
@@ -321,7 +349,7 @@ app.delete('/game/:id', (req, res) => {
     askedQuestions.delete(id)
 
     const lobby = lobbies.get(id) as Lobby
-    const { question, asked, randomID } = getQuestion(lobby, id)
+    const { question, asked, randomID } = getQuestion(lobby, id, filter, reverse)
 
     if (question) {
         const title_no = replacePlaceholders(question.title_no, lobby.players)
@@ -368,7 +396,7 @@ app.listen(port, () => {
 })
 
 // Fetches the next question
-function getQuestion(lobby: Lobby, id: string) {
+function getQuestion(lobby: Lobby, id: string, filter?: string[], reverseFilter?: boolean) {
     const custom = lobby?.questions || []
     const mergedQuestions = [...custom, ...questions]
 
@@ -377,13 +405,18 @@ function getQuestion(lobby: Lobby, id: string) {
     const asked = askedQuestions.get(id) || []
 
     do {
-        randomID = Math.floor(Math.random() * 100) + 1
+        // Takes custom questions first
+        randomID = Math.floor(Math.random() * (custom.length > 0 ? custom.length : 100))
         question = mergedQuestions[randomID]
-    } while (asked.includes(randomID) && asked.length < 100)
+
+        // Deletes custom questions
+        if (custom.length) {
+            lobbies.set(id, {...lobby, questions: removeQuestion(custom, question)})
+        }
+    } while (asked.includes(randomID) && asked.length < 100 && (!filter || comp(question.categories, filter, reverseFilter)))
 
     return { question, asked, randomID }
 }
-
 
 // Checks that the body has the required parameters
 function checkBody(req: any, res: any): string | null {
@@ -479,4 +512,30 @@ function updateCard({id, card}: UpdateCardProps) {
         const randomType = Math.floor((Math.random() * 100) % 4)
         cards.set(id, [...card, { number: newNumber, type: numberToType[randomType] as any, time: new Date().getTime() }])
     }
+}
+
+// Compares two lists, True if both lists contain at least one duplicate, otherwise false
+// If reversed, false if there are duplicates, otherwise true
+function comp(a: string[], b: string[], reverse?: boolean) {
+    for (const item of a) {
+        if (b.includes(item)) {
+            return reverse ? false : true
+        }
+    }
+    
+    return reverse ? true : false
+}
+
+// Removes an question from the array of questions
+function removeQuestion(array: Question[], element: Question) {
+    const newArray = []
+    for (const item of array) {
+        if (item.title_no === element.title_no) {
+            continue
+        }
+        
+        newArray.push(item)
+    }
+    
+    return newArray
 }

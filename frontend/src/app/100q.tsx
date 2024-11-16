@@ -11,18 +11,19 @@ import { useNavigation } from 'expo-router'
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types'
 import { setGame } from '@redux/game'
 import { setStatus } from '@utils/card'
+import PostQuestion from '@components/postQuestion'
 
 export default function Questions() {
     const { lang } = useSelector((state: ReduxState) => state.lang)
     const { theme } = useSelector((state: ReduxState) => state.theme)
     const { name } = useSelector((state: ReduxState) => state.name)
     const { gameID } = useSelector((state: ReduxState) => state.game)
+    const { filters } = useSelector((state: ReduxState) => state.game)
     const height = Dimensions.get('window').height
     const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null)
     const [roundStarted, setRoundStarted] = useState<boolean>(false)
     const [askedQuestions, setAskedQuestions] = useState<number[]>([])
     const [finished, setFinished] = useState<boolean>(false)
-    const [showExplanation, setShowExplanation] = useState<boolean>(true)
     const navigation = useNavigation<NativeStackNavigationProp<any>>()
     const dispatch = useDispatch()
     const gameModeText = lang ? 'Gjett' : 'Guess'
@@ -34,7 +35,6 @@ export default function Questions() {
         if (id) {
             dispatch(setGame(id))
             joinLobby(id, name)
-            setShowExplanation(false)
         }
     }
 
@@ -57,7 +57,7 @@ export default function Questions() {
         }
 
         if (gameID) {
-            const next = await nextQuestionAPI(gameID)
+            const next = await nextQuestionAPI(gameID, filters)
             
             if (next) {
                 setCurrentQuestion(next.current)
@@ -119,7 +119,7 @@ export default function Questions() {
                         flexDirection: 'row',
                         justifyContent: 'space-between'
                     }}>
-                        <FilterButtons />
+                        <FilterButtons gameID={gameID} />
                         <TouchableOpacity
                             style={{
                                 padding: 8,
@@ -159,6 +159,7 @@ export default function Questions() {
                                 <SmallButton handler={restartQuestions} text={lang ? "Start på nytt" : "Restart Questions"} />
                             )}
                         </View>
+                        {roundStarted && <PostQuestion />}
                     </>
                 )}
                 {finished && (

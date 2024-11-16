@@ -97,9 +97,15 @@ export async function kick(id: string, name: string) {
     }
 }
 
-export async function nextQuestion(id: string) {
+export async function nextQuestion(id: string, filters?: string[]) {
     try {
-        const response = await fetch(`${API}/game/${id}`, { method: "PUT" })
+        const content = filters ? { 
+                method: "PUT", 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filters }) 
+            } : { method: 'PUT' }
+
+        const response = await fetch(`${API}/game/${id}`, content)
 
         if (!response.ok) {
             throw new Error(`Failed to go to next question in ${id}. Error code: ${response.status}`)
@@ -108,6 +114,27 @@ export async function nextQuestion(id: string) {
         const next = await response.json()
 
         return next
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+export async function postQuestion(id: string, question: Question) {
+    try {
+        const response = await fetch(`${API}/question/${id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ...question, categories: [] })
+        })
+
+        if (!response.ok) {
+            throw new Error(`Failed to post question: ${response.text()}`)
+        }
+
+        const data = await response.json()
+        return data
     } catch (error) {
         console.error(error)
     }
