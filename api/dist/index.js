@@ -118,17 +118,20 @@ app.get('/scores/:id', (req, res) => {
             const updatedScores = calculateScores(activeCard, lobbyGuesses, []);
             if (new Date().getTime() - new Date(previousCard.time).getTime() > 30000) {
                 scores.set(id, updatedScores);
+                console.log("emptied guesses 1", lobbyGuesses, new Date().getMinutes());
                 guesses.set(id, []);
             }
             return res.json(updatedScores);
         }
         return res.json(lobbyScores);
     }
-    if (currentCard.number !== previousCard.number && (new Date().getTime() - new Date(currentCard.time).getTime() > 30000)) {
+    console.log("result", currentCard.number !== previousCard.number && (new Date().getTime() - new Date(previousCard.time).getTime() > 59000), "\ncurrent", currentCard.number, "\nprevious", previousCard.number, "\n", new Date().getTime() - new Date(previousCard.time).getTime());
+    if (currentCard.number !== previousCard.number && (new Date().getTime() - new Date(previousCard.time).getTime() > 59000)) {
         updateCard({ id, card });
         const newCard = cards.get(id);
         const updatedScores = calculateScores(newCard, lobbyGuesses, lobbyScores);
         scores.set(id, updatedScores);
+        console.log("emptied guesses 2", lobbyGuesses, new Date().getMinutes());
         guesses.set(id, []);
         return res.json(updatedScores);
     }

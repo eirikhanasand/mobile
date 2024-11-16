@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import getCard, { getScores, postGuess, setStatus } from '@utils/card'
+import getCard, { postGuess, setStatus } from '@utils/card'
 import SmallButton from '@components/smallButtons'
 import PlayerList from '@components/playerList'
 import LeaderBoard from '@components/leaderboard'
@@ -19,7 +19,13 @@ import {
     Dimensions, 
     Platform
 } from 'react-native'
-import GuessButtons from '@components/guessButtons'
+
+type GuessButtonsProps = {
+    roundStarted: boolean
+    sendGuess: (value: 'higher' | 'lower') => Promise<void>
+    card: Card | undefined
+    guess: Guess
+}
 
 type ButtonProps = {
     handler: () => void
@@ -33,12 +39,11 @@ export default function Guess() {
     const { gameID } = useSelector((state: ReduxState) => state.game)
     const [roundStarted, setRoundStarted] = useState<boolean>(false)
     const height = Dimensions.get('window').height
-    const [card, setCard] = useState<OneToFourteen>()
+    const [card, setCard] = useState<Card>()
     const [randomType, setRandomType] = useState<CardType>('hearts')
-    const [scores, setScores] = useState<Score[]>([])
     const navigation = useNavigation<NativeStackNavigationProp<any>>()
     const dispatch = useDispatch()
-    const [guess, setGuess] = useState<OneToFourteen>()
+    const [guess, setGuess] = useState<Guess>()
     const gameModeText = lang ? '100 Spørsmål' : '100 Questions'
     
     async function sendGuess(value: 'higher' | 'lower') {
@@ -49,9 +54,12 @@ export default function Guess() {
         })
         
         if (response) {
-            
-            if (response.result.includes('Successfully guessed')) {
-                setGuess(card)
+            if (response.result.includes('Successfully guessed') && card) {
+                setGuess({
+                    value: value === 'higher' ? true : false, 
+                    card: card.number,
+                    time: card.time
+                })
             }
         }
     }
@@ -70,7 +78,7 @@ export default function Guess() {
 
         if (random) {
             setRandomType(random.type)
-            setCard(random.number)
+            setCard({ ...random, time: 0 })
         }
     }
 
@@ -86,21 +94,11 @@ export default function Guess() {
     }
     
     useEffect(() => {
-        console.log("usefguess")
         async function updateCard() {
             const newCard = await getCard(gameID as string)
 
             if (newCard) {
-                console.log("newcard guess", newCard)
                 setCard(newCard)
-            }
-        }
-
-        async function updateScores() {
-            const scores = await getScores(gameID as string)
-
-            if (scores && !('error' in scores)) {
-                setScores(scores)
             }
         }
 
@@ -108,9 +106,6 @@ export default function Guess() {
             if (gameID) {
                 // Updates card
                 await updateCard()
-    
-                // Updates scores
-                await updateScores()
             }
         }, 2000)
     }, [gameID])
@@ -121,8 +116,7 @@ export default function Guess() {
 
             if (random) {
                 setRandomType(random.type)
-                console.log("random", random)
-                setCard(random.number)
+                setCard({ ...random, time: 1 })
             }
         }
     }, [gameID])
@@ -180,23 +174,25 @@ export default function Guess() {
                     </>
                 )}
             </View>
-            {gameID && roundStarted && <LeaderBoard gameID={gameID} />}
             {card && (roundStarted || !gameID) && <Cards
                 card={card} 
-                randomType={randomType} 
+                randomType={card.type} 
             />}
-            <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                {!gameID && <GuessButton 
-                    handler={() => gameID ? sendGuess('higher') : next()} 
-                    text={lang ? "Neste" : "Next"} 
-                />}
-                <GuessButtons 
-                    roundStarted={roundStarted} 
-                    sendGuess={sendGuess} 
-                    card={card}
-                    guess={guess}
-                />
-            </View>
+            {!gameID && <GuessButton 
+                handler={() => gameID ? sendGuess('higher') : next()} 
+                text={lang ? "Neste" : "Next"} 
+            />}
+            {gameID && roundStarted && <GuessButtons 
+                roundStarted={roundStarted} 
+                sendGuess={sendGuess} 
+                card={card}
+                guess={{
+                    value: guess?.value, 
+                    card: guess?.card,
+                    time: guess?.time
+                }}
+            />}
+            {gameID && roundStarted && <LeaderBoard gameID={gameID} />}
         </SafeAreaView>
     )
 }
@@ -211,6 +207,7 @@ export function GuessButton({handler, text}: ButtonProps) {
                 paddingVertical: 10,
                 paddingHorizontal: 20,
                 borderRadius: 5,
+                alignSelf: 'center'
             }}
             onPress={handler}
         >
@@ -222,5 +219,109 @@ export function GuessButton({handler, text}: ButtonProps) {
                 {text}
             </Text>
         </TouchableOpacity>
+    )
+}
+
+export function GuessButtons({sendGuess, card = 
+    { type: 'hearts', number: 1, time: 0}, guess}: GuessButtonsProps) {
+    const { gameID } = useSelector((state: ReduxState) => state.game)
+    const { theme } = useSelector((state: ReduxState) => state.theme)
+    const { lang } = useSelector((state: ReduxState) => state.lang)
+    const guessAge = (new Date().getTime() - new Date(guess.time || 0).getTime()) / 1000
+    const cardAge = Math.ceil((new Date().getTime() - new Date(card.time || 0).getTime()) / 1000)
+    const correct = ((guess.card || 0) > card.number && guess.value === false) 
+        || ((guess.card || 0) < card.number && guess.value === true)
+    const text = getText()
+
+    function getText() {
+        if (guess.value === true) {
+            if (lang) return 'Høyere'
+            else return 'Higher'
+        } else {
+            if (lang) return 'Lavere'
+            else return 'Lower'
+        }
+    }
+
+    if (guess.card === card.number) {
+        return (
+            <View style={{
+                backgroundColor: theme.blue,
+                alignSelf: 'center',
+                paddingBottom: 10,
+                paddingHorizontal: 20,
+                borderRadius: 200,
+                aspectRatio: 1/1,
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <Countdown cardAge={cardAge} />
+                <Text style={{
+                    fontWeight: 'bold', 
+                    fontSize: 16,
+                    color: theme.textColor,
+                    top: -10
+                }}>
+                    {text}
+                </Text>
+            </View>
+        )
+    }
+
+    return (
+        <View>
+            {guessAge < 35 && <View style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: correct ? 'green' : 'red',
+                marginHorizontal: 20,
+                borderRadius: 8,
+                height: 40,
+                marginBottom: 30
+            }}>
+                <Text style={{
+                    color: theme.textColor,
+                    fontWeight: 'bold',
+                }}>
+                    {correct ? lang ? 'Riktig' : 'Correct' : lang ? 'Feil' : 'Wrong'}
+                </Text>
+            </View>}
+            <View style={{flexDirection: 'row', width: '100%', justifyContent: 'space-evenly'}}>
+                {gameID && <>
+                    <GuessButton
+                        handler={() => gameID && sendGuess('higher')} 
+                        text={lang ? 'Høyere' : 'Higher'}
+                    />
+                    <Countdown cardAge={cardAge} />
+                    <GuessButton 
+                        handler={() => gameID && sendGuess('lower')} 
+                        text={lang ? 'Lavere' : 'Lower'}
+                    />
+                </>}
+            </View>
+        </View>
+    )
+}
+
+function Countdown({cardAge}: {cardAge: number}) {
+    const { theme } = useSelector((state: ReduxState) => state.theme)
+
+    return (
+        <View style={{
+            backgroundColor: theme.blue,
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+            borderRadius: 100,
+            height: 70,
+            width: 70,
+            alignItems: 'center',
+            justifyContent: 'center'
+        }}>
+            <Text style={{
+                color: theme.textColor,
+                fontSize: 16, 
+                fontWeight: 'bold'
+            }}>{30 - cardAge}</Text>
+        </View>
     )
 }

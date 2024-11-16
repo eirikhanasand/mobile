@@ -160,7 +160,7 @@ app.get('/scores/:id', (req, res) => {
         return res.json(lobbyScores)
     }
 
-    if (currentCard.number !== previousCard.number && (new Date().getTime() - new Date(currentCard.time).getTime() > 30000)) {
+    if (currentCard.number !== previousCard.number && (new Date().getTime() - new Date(previousCard.time).getTime() > 59000)) {
         updateCard({ id, card})
         const newCard = cards.get(id) as Card[]
         const updatedScores = calculateScores(newCard, lobbyGuesses, lobbyScores)

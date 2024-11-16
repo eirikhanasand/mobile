@@ -16,7 +16,7 @@ export default async function getCard(gameID: string) {
         }
 
         const data = await response.json()
-        return data.card
+        return data
     } catch (error) {
         console.error(`Failed to fetch: ${error}`)
     }
@@ -33,13 +33,16 @@ export async function getScores(gameID: string) {
 
         const data = await response.json()
         return data
-    } catch (error) {
-        console.error(`Failed to fetch: ${error}`)
+    } catch (error: any) {
+        // Most likely just no guesses yet
+        // console.error(`Failed to fetch: ${error}`)
+        return null
     }
 }
 
 // Posts a guess for the next card for the specified lobby with the given name
 export async function postGuess({ gameID, name, guess}: PostGuessProps) {
+    console.log("posted", `${API}/card/${gameID}/${name}/${guess}`, new Date().getTime())
     try {
         const response = await fetch(`${API}/card/${gameID}/${name}/${guess}`, {
             method: 'POST'

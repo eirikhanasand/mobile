@@ -18,6 +18,7 @@ type ReduxState = {
     game: {
         gameID: string
         joined: boolean
+        players: string[]
     }
     music: {
         playing: boolean
@@ -67,4 +68,16 @@ type CardType = 'hearts' | 'spades' | 'clubs' | 'diamonds'
 type Score = {
     name: string
     score: number
+}
+
+type Card = {
+    number: OneToFourteen
+    time: number
+    type: CardType
+}
+
+type Guess = {
+    value: boolean | undefined
+    card: OneToFourteen | undefined
+    time: number | undefined
 }

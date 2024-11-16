@@ -4,7 +4,7 @@ import Backside from '@assets/images/backside.svg'
 import Card from "./card"
 
 type CardsProps = {
-    card: OneToFourteen
+    card: Card
     randomType: CardType
 }
 
@@ -35,7 +35,7 @@ export default function Cards({card, randomType}: CardsProps) {
                 justifyContent: 'center',
             }}>
                 <Card
-                    number={card} 
+                    number={card.number} 
                     type={randomType}
                     style={{ 
                         height: 250, minHeight: 250, maxHeight: 250,

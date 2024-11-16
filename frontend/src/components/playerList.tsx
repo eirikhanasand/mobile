@@ -1,8 +1,9 @@
 import { MAX_PLAYERS } from "@constants"
+import { setPlayers } from "@redux/game"
 import { getLobby, kick } from "@utils/lobby"
 import { useState } from "react"
 import { ScrollView, Text, TouchableOpacity, View } from "react-native"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 type PlayerListProps = {
     gameID: string | null
@@ -12,14 +13,16 @@ export default function PlayerList({gameID}: PlayerListProps) {
     const { lang } = useSelector((state: ReduxState) => state.lang)
     const { theme } = useSelector((state: ReduxState) => state.theme)
     const { name } = useSelector((state: ReduxState) => state.name)
-    const [players, setPlayers] = useState([name])
-    const leader = players[0] === name ? lang ? "Deg" : "You" : players[0]
-    
+    const { players } = useSelector((state: ReduxState) => state.game)
+    const first = Array.isArray(players) ? players[0] : []
+    const leader = first === name ? lang ? "Deg" : "You" : first
+    const dipatch = useDispatch()
+
     async function getPlayers() {
         const lobby = await getLobby(gameID || '')
 
-        if (lobby && lobby.players !== players) {
-            setPlayers(lobby.players)
+        if (lobby && JSON.stringify(lobby.players) !== JSON.stringify(players)) {
+            dipatch(setPlayers(lobby.players))
         }
     }
 
@@ -29,7 +32,7 @@ export default function PlayerList({gameID}: PlayerListProps) {
         }
     }, 1000)
 
-    if (!gameID || !players.length) return null
+    if (!gameID || !Array.isArray(players)) return null
 
     return (
         <View style={{
@@ -57,7 +60,7 @@ export default function PlayerList({gameID}: PlayerListProps) {
                     showsVerticalScrollIndicator={false} 
                     scrollEventThrottle={100}
                 >
-                    {players.splice(1).map((player, index) => (
+                    {players.slice(1).map((player, index) => (
                         <View 
                             key={index}
                             style={{

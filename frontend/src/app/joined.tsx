@@ -10,7 +10,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Dimensions, SafeAreaView, Text, TouchableOpacity, View } from "react-native"
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types"
 import { useDispatch, useSelector } from "react-redux"
-import { GuessButton } from "./guess"
+import { GuessButtons } from "./guess"
 
 type OneHundredQuestionsProps = {
     text: string
@@ -104,10 +104,10 @@ function CardView({status, setStatus}: CardViewProps) {
     const { gameID } = useSelector((state: ReduxState) => state.game)
     const { lang } = useSelector((state: ReduxState) => state.lang)
     const { name } = useSelector((state: ReduxState) => state.name)
-    const [card, setCard] = useState<OneToFourteen>()
+    const [card, setCard] = useState<Card>()
     const [scores, setScores] = useState<Score[]>()
     const [randomType, setRandomType] = useState<CardType>('hearts')
-    const [guess, setGuess] = useState<OneToFourteen>()
+    const [guess, setGuess] = useState<Guess>()
     const roundStarted = status === 'cards'
 
     async function sendGuess(value: 'higher' | 'lower') {
@@ -118,8 +118,12 @@ function CardView({status, setStatus}: CardViewProps) {
         })
         
         if (response) {
-            if (response.result.includes('Successfully guessed')) {
-                setGuess(card)
+            if (response.result.includes('Successfully guessed') && card) {
+                setGuess({
+                    value: value === 'higher' ? true : false, 
+                    card: card.number,
+                    time: card.time
+                })
             }
         }
     }
@@ -129,7 +133,6 @@ function CardView({status, setStatus}: CardViewProps) {
             const newCard = await getCard(gameID as string)
 
             if (newCard) {
-                console.log("newcard joined", newCard)
                 setCard(newCard)
             }
         }
@@ -166,23 +169,21 @@ function CardView({status, setStatus}: CardViewProps) {
 
     return (
         <View style={{marginTop: 20}}>
-            {gameID && roundStarted && <LeaderBoard gameID={gameID} />}
             {card && (roundStarted || !gameID) && <Cards
                 card={card} 
-                randomType={randomType} 
+                randomType={card.type} 
             />}
-            <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-                {gameID && roundStarted && <>
-                    <GuessButton 
-                        handler={() => gameID && sendGuess('higher')} 
-                        text={lang ? 'Høyere' : 'Higher'} 
-                    />
-                    <GuessButton 
-                        handler={() => gameID && sendGuess('lower')} 
-                        text={lang ? 'Lavere' : 'Lower'}
-                    />
-                </>}
-            </View>
+            {roundStarted && <GuessButtons
+                roundStarted={roundStarted} 
+                sendGuess={sendGuess}
+                card={card} 
+                guess={{
+                    value: guess?.value, 
+                    card: guess?.card,
+                    time: guess?.time
+                }}
+            />}
+            {gameID && roundStarted && <LeaderBoard gameID={gameID} />}
         </View>
     )
 }

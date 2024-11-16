@@ -5,7 +5,8 @@ export const GameSlice = createSlice({
     name: "game",
     initialState: {
         gameID: null,
-        joined: false
+        joined: false,
+        players: []
     },
     reducers: {
         // Sets the game
@@ -14,12 +15,15 @@ export const GameSlice = createSlice({
         },
         setJoined(state, action) {
             state.joined = action.payload
+        },
+        setPlayers(state, action) {
+            state.players = action.payload
         }
     }
 })
 
 // Exports the change function
-export const { setGame, setJoined } = GameSlice.actions
+export const { setGame, setJoined, setPlayers } = GameSlice.actions
 
 // Exports the name slice
 export default GameSlice.reducer

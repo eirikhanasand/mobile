@@ -51,12 +51,13 @@ export default function LeaderBoard({gameID}: LeaderBoardProps) {
                 fontSize: 20,
                 fontWeight: 'bold',
                 marginLeft: 23,
+                marginBottom: 10
             }}>{lang ? 'Poengtavle' : 'Leaderboard'}</Text>
             <Header />
             <ScrollView showsVerticalScrollIndicator={false}>
-                {scores.map((score) => {
+                {scores.sort((a, b) => b.score - a.score).map((score) => {
                     return (
-                        <View style={{
+                        <View key={score.name} style={{
                             flexDirection: 'row', 
                             justifyContent: 'space-between',
                             marginHorizontal: 25
@@ -84,17 +85,22 @@ function Header() {
     const { lang } = useSelector((state: ReduxState) => state.lang)
 
     return (
-        <View style={{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 25}}>
+        <View style={{
+            flexDirection: 'row', 
+            justifyContent: 'space-between', 
+            marginHorizontal: 25
+        }}>
             <Text style={{ 
                 color: theme.textColor,
-                fontSize: 18
-                
+                fontSize: 18,
+                fontWeight: 'bold'
             }}>
                 {lang ? 'Navn' : 'Name'}
             </Text>
             <Text style={{ 
                 color: theme.textColor,
-                fontSize: 18
+                fontSize: 18,
+                fontWeight: 'bold'
             }}>
                 {lang ? 'Poengsum' : 'Score'}
             </Text>
