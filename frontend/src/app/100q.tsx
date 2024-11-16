@@ -11,6 +11,7 @@ import { nextQuestion as nextQuestionAPI } from "@utils/lobby"
 import { useNavigation } from 'expo-router'
 import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types'
 import { setGame } from '@redux/game'
+import { setStatus } from '@utils/card'
 
 export default function Questions() {
     const { lang } = useSelector((state: ReduxState) => state.lang)
@@ -83,6 +84,7 @@ export default function Questions() {
     }
 
     function switchGameMode() {
+        setStatus(gameID, 'cards')
         navigation.navigate('guess')
     }
 

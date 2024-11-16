@@ -70,7 +70,7 @@ export default function Joined() {
         <SafeAreaView style={{ backgroundColor: theme.background, height }}>
             <View style={{ 
                 paddingHorizontal: 8, 
-                height: text ? '90%' : undefined, 
+                height: text && status !== 'cards' ? '90%' : undefined, 
                 justifyContent: 'center' 
             }}>
                 <View style={{
@@ -93,7 +93,7 @@ export default function Joined() {
                     </TouchableOpacity>
                 </View>
                 {status !== 'cards' && <OneHundredQuestions text={text} gameID={gameID} />}
-                {status !== 'cards' && <Status text={status} />}
+                {status !== 'cards' && status !== 'ingame' && <Status text={status} />}
                 <CardView status={status} setStatus={setStatus} />
             </View>
         </SafeAreaView>
@@ -102,11 +102,8 @@ export default function Joined() {
 
 function CardView({status, setStatus}: CardViewProps) {
     const { gameID } = useSelector((state: ReduxState) => state.game)
-    const { lang } = useSelector((state: ReduxState) => state.lang)
     const { name } = useSelector((state: ReduxState) => state.name)
     const [card, setCard] = useState<Card>()
-    const [scores, setScores] = useState<Score[]>()
-    const [randomType, setRandomType] = useState<CardType>('hearts')
     const [guess, setGuess] = useState<Guess>()
     const roundStarted = status === 'cards'
 
@@ -137,14 +134,6 @@ function CardView({status, setStatus}: CardViewProps) {
             }
         }
 
-        async function updateScores() {
-            const scores = await getScores(gameID as string)
-
-            if (scores && !('error' in scores)) {
-                setScores(scores)
-            }
-        }
-
         async function fetchLobby() {
             const lobby = await getLobby(gameID)
 
@@ -157,9 +146,6 @@ function CardView({status, setStatus}: CardViewProps) {
             if (gameID) {
                 // Updates card
                 await updateCard()
-    
-                // Updates scores
-                await updateScores()
 
                 // Fetches lobby
                 await fetchLobby()
@@ -168,7 +154,7 @@ function CardView({status, setStatus}: CardViewProps) {
     }, [])
 
     return (
-        <View style={{marginTop: 20}}>
+        <View style={{marginTop: 40}}>
             {card && (roundStarted || !gameID) && <Cards
                 card={card} 
                 randomType={card.type} 

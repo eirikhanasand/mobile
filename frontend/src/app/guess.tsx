@@ -83,7 +83,8 @@ export default function Guess() {
     }
 
     function switchGameMode() {
-        navigation.navigate('100q')   
+        setStatus(gameID, 'ingame')
+        navigation.navigate('100q') 
     }
 
     function leave() {
