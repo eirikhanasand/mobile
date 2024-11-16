@@ -1,7 +1,7 @@
 import LeaderBoard from "@components/leaderboard"
 import Leave from "@components/leave"
 import PlayerList from "@components/playerList"
-import getCard, { getScores, postGuess } from "@utils/card"
+import getCard, { postGuess } from "@utils/card"
 import Cards from "@components/cards"
 import { setGame } from "@redux/game"
 import { getLobby, kick } from "@utils/lobby"
@@ -10,8 +10,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { Dimensions, SafeAreaView, Text, TouchableOpacity, View } from "react-native"
 import { NativeStackNavigationProp } from "react-native-screens/lib/typescript/native-stack/types"
 import { useDispatch, useSelector } from "react-redux"
-import { GuessButtons } from "./guess"
-import PostQuestion from "@components/postQuestion"
+import PostQuestion from "@components/questions/postQuestion"
+import GuessButtons from "@components/guess/guessButtons"
 
 type OneHundredQuestionsProps = {
     text: string

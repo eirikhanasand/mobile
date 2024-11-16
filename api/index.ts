@@ -31,68 +31,6 @@ app.get('/', (_, res) => {
     res.json({error: "Invalid endpoint. Please use /games for an overview of existing games."})
 })
 
-// Single player questions endpoint
-app.get('/question/:name', (req, res) => {
-    const { name } = req.params
-    const { filters, reverse } = req.body
-
-    if (!name) {
-        return res.status(400).json({ error: "You must provide a name so we can avoid giving duplicate questions." })
-    }
-
-    let lobby = lobbies.get(name)
-    if (!lobby) {
-        lobbies.set(name, {
-            players: [name],
-            status: 'ingame',
-            current: undefined,
-            questions: undefined
-        })
-    }
-
-    lobby = lobbies.get(name)
-
-    if (!lobby) {
-        return res.status(400).json({ error: "Could not find nor create lobby. Try the POST /lobby endpoint first." })
-    }
-
-    const { question, asked, randomID } = getQuestion(lobby as Lobby, name, filters, reverse)
-
-    if (question) {
-        const title_no = replacePlaceholders(question.title_no, lobby.players)
-        const title_en = replacePlaceholders(question.title_en, lobby.players)
-
-        const current = {
-            title_no,
-            title_en,
-            categories: question.categories
-        }
-
-        // Skips custom questions since these are deleted upon usage
-        if (!lobby.questions?.length) {
-            askedQuestions.set(name, [...asked, randomID])
-        }
-
-        const updatedLobby = {...lobby, current}
-        lobbies.set(name.toUpperCase(), updatedLobby)
-    
-        res.json({
-            players: lobby.players,
-            status: lobby?.status,
-            current,
-        })
-    } else {
-        askedQuestions.delete(name)
-        const { question } = getQuestion(lobby, name, filters, reverse)
-
-        res.status(201).json({
-            players: lobby.players,
-            status: lobby?.status,
-            current: question,
-        })
-    }
-})
-
 // Fetches the information for the specified lobby
 app.get('/lobby/:id', (req, res) => {
     const { id } = req.params
@@ -325,6 +263,69 @@ app.put('/lobby', (req, res) => {
     res.json(updatedLobby)
 })
 
+
+// Single player questions endpoint
+app.put('/question/:name', (req, res) => {
+    const { name } = req.params
+    const { filters, reverse } = req.body
+
+    if (!name) {
+        return res.status(400).json({ error: "You must provide a name so we can avoid giving duplicate questions." })
+    }
+
+    let lobby = lobbies.get(name)
+    if (!lobby) {
+        lobbies.set(name, {
+            players: [name],
+            status: 'ingame',
+            current: undefined,
+            questions: undefined
+        })
+    }
+
+    lobby = lobbies.get(name)
+
+    if (!lobby) {
+        return res.status(400).json({ error: "Could not find nor create lobby. Try the POST /lobby endpoint first." })
+    }
+
+    const { question, asked, randomID } = getQuestion(lobby as Lobby, name, filters, reverse)
+
+    if (question) {
+        const title_no = replacePlaceholders(question.title_no, lobby.players)
+        const title_en = replacePlaceholders(question.title_en, lobby.players)
+
+        const current = {
+            title_no,
+            title_en,
+            categories: question.categories
+        }
+
+        // Skips custom questions since these are deleted upon usage
+        if (!lobby.questions?.length) {
+            askedQuestions.set(name, [...asked, randomID])
+        }
+
+        const updatedLobby = {...lobby, current}
+        lobbies.set(name.toUpperCase(), updatedLobby)
+    
+        res.json({
+            players: lobby.players,
+            status: lobby?.status,
+            current,
+        })
+    } else {
+        askedQuestions.delete(name)
+        const { question } = getQuestion(lobby, name, filters, reverse)
+
+        res.status(201).json({
+            players: lobby.players,
+            status: lobby?.status,
+            current: question,
+        })
+    }
+})
+
 // Goes to the next question
 app.put('/game/:id', (req, res) => {
     const { id } = req.params
@@ -337,8 +338,8 @@ app.put('/game/:id', (req, res) => {
     }
 
     const lobby = lobbies.get(id) as Lobby
-    const { question, asked, randomID } = getQuestion(lobby, id, filters, reverse)
 
+    const { question, asked, randomID } = getQuestion(lobby, id, filters, reverse)
     if (question) {
         const title_no = replacePlaceholders(question.title_no, lobby.players)
         const title_en = replacePlaceholders(question.title_en, lobby.players)
@@ -354,7 +355,8 @@ app.put('/game/:id', (req, res) => {
             askedQuestions.set(id, [...asked, randomID])
         }
 
-        const updatedLobby = {...lobby, current}
+        const tempLobby = lobbies.get(id) as Lobby
+        const updatedLobby = {...tempLobby, current}
         lobbies.set(id.toUpperCase(), updatedLobby)
     
         res.json({

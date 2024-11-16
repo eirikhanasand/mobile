@@ -97,6 +97,28 @@ export async function kick(id: string, name: string) {
     }
 }
 
+export async function nextSinglePlayerQuestion(name: string, filters?: string[]) {
+    try {
+        const content = filters ? { 
+                method: "PUT", 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ filters }) 
+            } : { method: 'PUT' }
+
+        const response = await fetch(`${API}/question/${name}`, content)
+
+        if (!response.ok) {
+            throw new Error(`Failed to go to next question for ${name}. Error code: ${response.status}`)
+        }
+
+        const next = await response.json()
+
+        return next
+    } catch (error) {
+        console.error(error)
+    }
+}
+
 export async function nextQuestion(id: string, filters?: string[]) {
     try {
         const content = filters ? { 
